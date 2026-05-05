@@ -1,0 +1,40 @@
+name: 국토부 실거래가 자동 수집
+
+on:
+  schedule:
+    - cron: '0 23 * * 0'
+  push:
+    paths:
+      - 'data/weekly/*.xlsx'
+  workflow_dispatch:
+
+jobs:
+  collect:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+
+    steps:
+      - name: 저장소 체크아웃
+        uses: actions/checkout@v4
+
+      - name: Python 설치
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: 패키지 설치
+        run: pip install requests
+
+      - name: 국토부 실거래가 수집
+        env:
+          MOLIT_API_KEY: ${{ secrets.MOLIT_API_KEY }}
+        run: python scripts/build_from_api.py
+
+      - name: 결과 커밋
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add data/complexes.json data/transactions.json
+          git diff --cached --quiet || git commit -m "자동수집: 국토부 실거래가 $(date +'%Y-%m-%d')"
+          git push
