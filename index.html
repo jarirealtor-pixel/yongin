@@ -848,15 +848,57 @@ function markPub(){published.add(cx.name);document.getElementById("pubBadge").te
 function resetPrev(){genText="";document.getElementById("pvContent").innerHTML='<div class="empty">소식지를 생성하면 여기에 표시됩니다.</div>';document.getElementById("pvActs").style.display="none";document.getElementById("pbi").style.width="0%";document.getElementById("stat").textContent="";}
 
 function demo(){return{source:"demo",updated:new Date().toISOString(),districts:{
-  "수지구":{"죽전동":[{id:"c001",name:"죽전 힐스테이트",year:2006,types:["84","59","74"],bp:{84:85000,59:63000,74:72000},rr:.62,tradeCount:48},{id:"c002",name:"죽전 푸르지오",year:2004,types:["84","59"],bp:{84:80000,59:59000},rr:.64,tradeCount:32},{id:"c005",name:"성복역 롯데캐슬",year:2019,types:["84","59","114"],bp:{84:105000,59:78000,114:138000},rr:.55,tradeCount:18}],
-  "풍덕천동":[{id:"c006",name:"수지 래미안 이스트파크",year:2019,types:["84","59"],bp:{84:92000,59:69000},rr:.58,tradeCount:56},{id:"c007",name:"LG자이 수지",year:2003,types:["84","59"],bp:{84:75000,59:56000},rr:.66,tradeCount:28}],
-  "동천동":[{id:"c010",name:"동천 자이",year:2016,types:["84","59"],bp:{84:88000,59:65000},rr:.60,tradeCount:34},{id:"c011",name:"동천 센트럴자이",year:2019,types:["84","59"],bp:{84:91000,59:67000},rr:.59,tradeCount:19}],
-  "상현동":[{id:"c013",name:"상현 래미안",year:2009,types:["84","59"],bp:{84:76000,59:56500},rr:.63,tradeCount:26}]},
-  "기흥구":{"보정동":[{id:"c020",name:"힐스테이트 보정",year:2018,types:["84","59"],bp:{84:68000,59:51000},rr:.63,tradeCount:30},{id:"c025",name:"기흥역 롯데캐슬",year:2020,types:["84","59","114"],bp:{84:72000,59:54500,114:95000},rr:.61,tradeCount:38}],
-  "구성읍":[{id:"c023",name:"구성 래미안",year:2008,types:["84","59"],bp:{84:59000,59:45000},rr:.67,tradeCount:20}],
-  "동백동":[{id:"c030",name:"동백 롯데캐슬",year:2007,types:["84","59"],bp:{84:61000,59:46000},rr:.66,tradeCount:29}]},
-  "처인구":{"역북동":[{id:"c040",name:"역북 롯데캐슬",year:2015,types:["84","59"],bp:{84:45000,59:34500},rr:.71,tradeCount:18},{id:"c041",name:"용인 센트럴자이",year:2021,types:["84","59"],bp:{84:48000,59:36500},rr:.70,tradeCount:12}],
-  "남사읍":[{id:"c042",name:"남사 e편한세상",year:2022,types:["84","59"],bp:{84:39000,59:29500},rr:.73,tradeCount:10}]}
+  "수지구":{
+  "죽전동":[
+    {id:"c001",name:"죽전 힐스테이트",year:2006,types:["59","74","84"],bp:{59:63000,74:72000,84:85000},rr:.62,tradeCount:48},
+    {id:"c002",name:"죽전 푸르지오",year:2004,types:["59","84"],bp:{59:59000,84:80000},rr:.64,tradeCount:32},
+    {id:"c003",name:"죽전역 두산위브",year:2008,types:["59","84"],bp:{59:61000,84:82000},rr:.63,tradeCount:24},
+    {id:"c004",name:"죽전 현대홈타운",year:2003,types:["59","84"],bp:{59:55000,84:74000},rr:.65,tradeCount:20},
+    {id:"c005",name:"죽전 삼성래미안",year:2002,types:["84","114"],bp:{84:79000,114:108000},rr:.64,tradeCount:18},
+    {id:"c006",name:"보정 센트럴파크",year:2005,types:["59","84"],bp:{59:58000,84:78000},rr:.63,tradeCount:15}
+  ],
+  "성복동":[
+    {id:"c010",name:"성복역 롯데캐슬 1단지",year:2019,types:["59","84","114"],bp:{59:78000,84:105000,114:138000},rr:.55,tradeCount:22},
+    {id:"c011",name:"성복역 롯데캐슬 2단지",year:2020,types:["59","84","114"],bp:{59:79000,84:107000,114:140000},rr:.54,tradeCount:18},
+    {id:"c012",name:"성복 힐스테이트",year:2009,types:["59","84"],bp:{59:65000,84:88000},rr:.60,tradeCount:26},
+    {id:"c013",name:"성복 아이파크",year:2011,types:["59","84"],bp:{59:64000,84:86000},rr:.61,tradeCount:21},
+    {id:"c014",name:"성복 e편한세상",year:2013,types:["59","84"],bp:{59:62000,84:84000},rr:.62,tradeCount:17}
+  ],
+  "풍덕천동":[
+    {id:"c020",name:"수지 래미안 이스트파크",year:2019,types:["59","84"],bp:{59:69000,84:92000},rr:.58,tradeCount:56},
+    {id:"c021",name:"LG자이 수지",year:2003,types:["59","84"],bp:{59:56000,84:75000},rr:.66,tradeCount:28},
+    {id:"c022",name:"수지 한신아파트",year:1997,types:["59","84"],bp:{59:48000,84:65000},rr:.69,tradeCount:22},
+    {id:"c023",name:"수지 삼성아파트",year:1998,types:["84"],bp:{84:64000},rr:.67,tradeCount:16},
+    {id:"c024",name:"풍덕천 현대아파트",year:1996,types:["84"],bp:{84:60000},rr:.70,tradeCount:14},
+    {id:"c025",name:"수지 포스빌",year:2007,types:["59","84"],bp:{59:58000,84:78000},rr:.64,tradeCount:19}
+  ],
+  "동천동":[
+    {id:"c030",name:"동천 자이",year:2016,types:["59","74","84"],bp:{59:68000,74:79000,84:92000},rr:.59,tradeCount:38},
+    {id:"c031",name:"동천 센트럴자이",year:2019,types:["59","84"],bp:{59:70000,84:95000},rr:.57,tradeCount:24},
+    {id:"c032",name:"동천역 롯데캐슬",year:2020,types:["59","84","114"],bp:{59:71000,84:96000,114:128000},rr:.57,tradeCount:20},
+    {id:"c033",name:"동천 힐스테이트",year:2009,types:["59","84"],bp:{59:62000,84:84000},rr:.61,tradeCount:29},
+    {id:"c034",name:"동천 금호어울림",year:2008,types:["59","84"],bp:{59:60000,84:81000},rr:.62,tradeCount:18},
+    {id:"c035",name:"동천 파크자이",year:2013,types:["59","84"],bp:{59:64000,84:86000},rr:.61,tradeCount:22}
+  ],
+  "상현동":[
+    {id:"c040",name:"상현 래미안",year:2009,types:["59","84"],bp:{59:56500,84:76000},rr:.63,tradeCount:26},
+    {id:"c041",name:"상현 아이파크",year:2011,types:["59","84"],bp:{59:58000,84:78000},rr:.62,tradeCount:22},
+    {id:"c042",name:"광교산 아이파크",year:2012,types:["84","114"],bp:{84:80000,114:108000},rr:.60,tradeCount:18},
+    {id:"c043",name:"상현 힐스테이트",year:2014,types:["59","84"],bp:{59:60000,84:81000},rr:.62,tradeCount:20},
+    {id:"c044",name:"상현역 롯데캐슬",year:2021,types:["59","84"],bp:{59:64000,84:86000},rr:.60,tradeCount:15},
+    {id:"c045",name:"상현 e편한세상",year:2010,types:["59","84"],bp:{59:57000,84:77000},rr:.63,tradeCount:19}
+  ],
+  "신봉동":[
+    {id:"c050",name:"신봉 자이",year:2007,types:["59","84","114"],bp:{59:60000,84:82000,114:112000},rr:.63,tradeCount:30},
+    {id:"c051",name:"신봉 래미안",year:2008,types:["59","84"],bp:{59:58000,84:79000},rr:.64,tradeCount:24},
+    {id:"c052",name:"신봉 힐스테이트",year:2010,types:["59","84"],bp:{59:59000,84:80000},rr:.63,tradeCount:20},
+    {id:"c053",name:"신봉 LG자이",year:2006,types:["59","84"],bp:{59:57000,84:77000},rr:.64,tradeCount:17}
+  ],
+  "고기동":[
+    {id:"c060",name:"수지 광교 힐스테이트",year:2016,types:["84","114"],bp:{84:90000,114:122000},rr:.58,tradeCount:16},
+    {id:"c061",name:"고기 동원로얄듀크",year:2017,types:["84"],bp:{84:86000},rr:.59,tradeCount:12}
+  ]
+  }
 }};}
 
 loadData();
