@@ -2,11 +2,8 @@ name: 국토부 실거래가 자동 수집
 
 on:
   schedule:
-    - cron: '0 23 * * 0'
-  push:
-    paths:
-      - 'data/weekly/*.xlsx'
-  workflow_dispatch:
+    - cron: '0 23 * * 0'   # 매주 일요일 23:00 UTC = 월 08:00 KST
+  workflow_dispatch:         # 수동 실행 버튼
 
 jobs:
   collect:
@@ -15,11 +12,9 @@ jobs:
       contents: write
 
     steps:
-      - name: 저장소 체크아웃
-        uses: actions/checkout@v4
+      - uses: actions/checkout@v4
 
-      - name: Python 설치
-        uses: actions/setup-python@v5
+      - uses: actions/setup-python@v5
         with:
           python-version: '3.11'
 
@@ -36,5 +31,5 @@ jobs:
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
           git add data/complexes.json data/transactions.json
-          git diff --cached --quiet || git commit -m "자동수집: 국토부 실거래가 $(date +'%Y-%m-%d')"
+          git diff --cached --quiet || git commit -m "실거래가 자동 수집 $(date +'%Y-%m-%d KST' -d '+9 hours')"
           git push
