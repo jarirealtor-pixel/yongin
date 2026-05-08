@@ -66,10 +66,16 @@ td{padding:6px 12px;border-bottom:1px solid #f4f4f4;color:#222;white-space:nowra
 tr:last-child td{border:none}
 tr:hover td{background:#f0f8f6}
 .fw{font-weight:700}
+.tybtn{font-size:10px;font-weight:700;padding:2px 10px;border-radius:12px;cursor:pointer;border:1.5px solid #c8d4da;color:#8fa4b0;background:#fff;margin-left:3px}
+.tybtn:hover{border-color:#1B6FA8;color:#1B6FA8}
+.tybtn.on{background:#1B6FA8;color:#fff;border-color:#1B6FA8}
 .tag-r{font-size:8px;padding:1px 5px;border-radius:3px;background:#d0e8f5;color:#1B6FA8;font-weight:700;margin-left:3px;vertical-align:middle}
 .tag-n{font-size:8px;padding:1px 5px;border-radius:3px;background:#faeeda;color:#BA7517;font-weight:700;margin-left:3px;vertical-align:middle}
 .notice{background:#faeeda;border:1px solid rgba(186,117,23,.25);border-radius:7px;padding:8px 12px;font-size:10px;color:#854F0B;flex-shrink:0}
 #empty{display:flex;flex-direction:column;align-items:center;justify-content:center;flex:1;color:#aaa;font-size:13px;gap:12px}
+#admin-lock{position:fixed;bottom:10px;right:14px;font-size:10px;color:#ddd;cursor:pointer;z-index:999;user-select:none;padding:3px 6px;border-radius:4px}
+#admin-lock:hover{color:#2B7A6F;background:#f0f4f6}
+#upload-section{display:none}
 @media(max-width:700px){#sb{display:none}.cards{grid-template-columns:repeat(2,1fr)}.charts,.charts3{grid-template-columns:1fr}}
 </style>
 </head>
@@ -82,11 +88,17 @@ tr:hover td{background:#f0f8f6}
 <div id="main">
   <div id="topbar">
     <div><div id="cpxname">단지를 선택하세요</div><div id="cpxmeta">왼쪽 목록에서 단지를 클릭하세요</div></div>
-    <div class="typebar">
-      <span class="tlbl">거래유형</span>
-      <button class="tbtn sel-m" id="btn-m" onclick="setTT('m')">매매</button>
-      <button class="tbtn" id="btn-j" onclick="setTT('j')">전세</button>
-      <button class="tbtn" id="btn-w" onclick="setTT('w')">월세</button>
+    <div style="display:flex;flex-direction:column;align-items:flex-end;gap:6px">
+      <div class="typebar">
+        <span class="tlbl">거래유형</span>
+        <button class="tbtn sel-m" id="btn-m" onclick="setTT('m')">매매</button>
+        <button class="tbtn" id="btn-j" onclick="setTT('j')">전세</button>
+        <button class="tbtn" id="btn-w" onclick="setTT('w')">월세</button>
+      </div>
+      <div class="typebar" id="type-selector" style="display:none">
+        <span class="tlbl">타입</span>
+        <span id="type-btns"></span>
+      </div>
     </div>
   </div>
   <div id="tabs">
@@ -159,7 +171,7 @@ tr:hover td{background:#f0f8f6}
       </div>
     </div>
     <!-- 네이버 시세 업로드 -->
-    <div class="tbl-box">
+    <div class="tbl-box" id="upload-section">
       <div class="tbl-hd">
         <span class="tbl-ttl">📂 네이버 시세 업로드</span>
         <span class="tbl-cnt">시세 파일 업로드 → 자동 반영</span>
@@ -323,6 +335,60 @@ function setTT(t){
   ['m','j','w'].forEach(function(id){document.getElementById('btn-'+id).className='tbtn'+(id===t?' '+c[id]:'');});
   if(sel)renderOv();
 }
+function setSelType(t){
+  selType=t;
+  document.querySelectorAll('.tybtn').forEach(function(b){
+    b.classList.toggle('on',b.getAttribute('data-t')===t);
+  });
+  if(sel){renderOv();renderVs();renderCp();}
+}
+
+function buildTypeSelector(){
+  if(!sel||!sel.types||sel.types.length<2){
+    document.getElementById('type-selector').style.display='none';
+    return;
+  }
+  document.getElementById('type-selector').style.display='flex';
+  var html='';
+  sel.types.forEach(function(t){
+    html+='<button class="tybtn'+(t===selType?' on':'')+'" data-t="'+t+'" onclick="setSelType(''+t+'')">'+t+'㎡</button>';
+  });
+  document.getElementById('type-btns').innerHTML=html;
+}
+
+function adminUnlock(){
+  if(isAdmin){
+    // 잠그기
+    isAdmin=false;
+    sessionStorage.removeItem('adminAuth');
+    document.getElementById('upload-section').style.display='none';
+    document.getElementById('admin-lock').textContent='🔒';
+    document.getElementById('admin-lock').title='관리자';
+    return;
+  }
+  var pw=prompt('관리자 코드를 입력하세요:');
+  if(!pw)return;
+  // 비밀번호: sujistar2024 (변경 가능)
+  if(pw==='sujistar2024'||pw===sessionStorage.getItem('adminAuth')){
+    isAdmin=true;
+    sessionStorage.setItem('adminAuth',pw);
+    document.getElementById('upload-section').style.display='block';
+    document.getElementById('admin-lock').textContent='🔓';
+    document.getElementById('admin-lock').title='관리자 모드 (클릭하여 잠금)';
+  } else {
+    alert('코드가 맞지 않습니다.');
+  }
+}
+
+// 세션에 관리자 인증이 있으면 자동 복원
+(function(){
+  if(sessionStorage.getItem('adminAuth')){
+    isAdmin=true;
+    document.getElementById('upload-section').style.display='block';
+    document.getElementById('admin-lock').textContent='🔓';
+  }
+})();
+
 function showTab(t){
   ['ov','vs','cp','sm'].forEach(function(id){
     document.getElementById('p-'+id).className='panel'+(id===t?' on':'');
@@ -357,7 +423,7 @@ function realData(name){
   var now=new Date(),R={m:[],j:[],w:[]};
   for(var i=0;i<trades.length;i++){
     var t=trades[i],ym=String(t.ym||'202501');
-    var y=parseInt(ym.slice(0,4)),mo2=parseInt(ym.slice(4,6));
+    var y=parseInt(t.year||ym.slice(0,4)),mo2=parseInt(t.month||ym.slice(4,6));
     var diff=(now.getFullYear()-y)*12+(now.getMonth()+1-mo2);
     if(diff<0||diff>23)continue;
     var mi=23-diff;
@@ -386,8 +452,8 @@ function getYoY(cx,areaBin){
   var c={},q={},m={};
   trades.forEach(function(t){
     if(areaBin&&t.areaBin&&t.areaBin!==areaBin)return;
-    var y=parseInt(t.yr||String(t.ym).slice(0,4)||curY);
-    var mn=parseInt(t.mn||String(t.ym).slice(4,6)||curM);
+    var y=parseInt(t.year||String(t.ym||'').slice(0,4)||curY);
+    var mn=parseInt(t.month||String(t.ym||'').slice(4,6)||curM);
     var qq=Math.ceil(mn/3);
     c[y]=(c[y]||0)+1;
     var qk=y+'_'+qq; q[qk]=(q[qk]||0)+1;
@@ -408,37 +474,38 @@ function renderOv(){
   document.getElementById('empty').style.display='none';
   var det=document.getElementById('detail');det.style.display='flex';
   var cx=sel,DATA=gd(cx),arr=DATA[tt]||[];
-  var bp84=(cx.bp&&(cx.bp[84]||cx.bp[59]||Object.values(cx.bp)[0]))||70000;
+  var selTi=parseInt(selType);
+  var bp84=(cx.bp&&(cx.bp[selTi]||cx.bp[84]||cx.bp[59]||Object.values(cx.bp)[0]))||70000;
   var col={m:'#1B6FA8',j:'#2B7A6F',w:'#2B7A6F'}[tt];
   var mh='';
 
   if(tt==='m'){
     // 최근 1건 (가장 최신 거래)
-    var arr84=arr.filter(function(x){return x.t==='84';}).sort(function(a,b){return b.mo-a.mo;});
+    var arr84=arr.filter(function(x){return x.t===selType;}).sort(function(a,b){return b.mo-a.mo;});
     var lastTx=arr84[0];
     var lastP=lastTx?lastTx.act:bp84;
-    var listing=getListing(cx,'84');
+    var listing=getListing(cx,selType);
     var gap=Math.round((listing.avg-lastP)/listing.avg*100);
-    var yoy=getYoY(cx,'84');
+    var yoy=getYoY(cx,selType);
     var now=new Date(),curY=now.getFullYear(),curM=now.getMonth()+1,curQ=Math.ceil(curM/3);
 
     mh='<div class="card cA"><div class="card-lbl">84㎡ 최근 실거래</div><div class="card-val">'+fmt(lastP)+'</div><div class="card-sub">'+(lastTx?lastTx.yr+'년 '+lastTx.mn+'월':'최근 거래')+'</div></div>';
     mh+='<div class="card cT"><div class="card-lbl">직전년 대비 거래율</div><div class="card-val">'+(yoy.yoyTotal||'-')+'</div><div class="card-sub">'+curY+'년 vs '+(curY-1)+'년</div></div>';
     mh+='<div class="card cT"><div class="card-lbl">동분기 대비</div><div class="card-val">'+(yoy.yoyQ||'-')+'</div><div class="card-sub">'+'Q'+curQ+' '+curY+' vs '+(curY-1)+'</div></div>';
     mh+='<div class="card cT"><div class="card-lbl">동월 대비</div><div class="card-val">'+(yoy.yoyM||'-')+'</div><div class="card-sub">'+curM+'월 '+curY+' vs '+(curY-1)+'</div></div>';
-    document.getElementById('c1ttl').textContent='매매 실거래가 vs 호가 범위 (84㎡)';
+    document.getElementById('c1ttl').textContent='매매 실거래가 vs 호가 범위 ('+selType+'㎡)';
 
   }else if(tt==='j'){
-    var arr84j=arr.filter(function(x){return x.t==='84';}).sort(function(a,b){return b.mo-a.mo;});
+    var arr84j=arr.filter(function(x){return x.t===selType;}).sort(function(a,b){return b.mo-a.mo;});
     var lastJ=arr84j[0];
     var lastJP=lastJ?lastJ.act:Math.round(bp84*(cx.rr||0.63));
-    var yoy=getYoY(cx,'84');
+    var yoy=getYoY(cx,selType);
     var now=new Date(),curY=now.getFullYear(),curM=now.getMonth()+1,curQ=Math.ceil(curM/3);
     mh='<div class="card cB"><div class="card-lbl">84㎡ 최근 전세</div><div class="card-val">'+fmt(lastJP)+'</div><div class="card-sub">'+(lastJ?lastJ.yr+'년 '+lastJ.mn+'월':'최근 거래')+'</div></div>';
     mh+='<div class="card cB"><div class="card-lbl">전세가율</div><div class="card-val">'+Math.round(lastJP/bp84*100)+'%</div><div class="card-sub">매매 대비</div></div>';
     mh+='<div class="card cT"><div class="card-lbl">동분기 대비</div><div class="card-val">'+(yoy.yoyQ||'-')+'</div><div class="card-sub">'+'Q'+curQ+' '+curY+' vs '+(curY-1)+'</div></div>';
     mh+='<div class="card cA"><div class="card-lbl">매매 최근가</div><div class="card-val">'+fmt(bp84)+'</div><div class="card-sub">84㎡ 기준</div></div>';
-    document.getElementById('c1ttl').textContent='전세 추이 (84㎡)';
+    document.getElementById('c1ttl').textContent='전세 추이 ('+selType+'㎡)';
   }else{
     var wa=DATA.w.filter(function(x){return x.mo===23;});
     var aD=wa.length?av(wa.map(function(x){return x.dep;})):Math.round(bp84*0.12);
@@ -460,7 +527,7 @@ function renderOv(){
       return sub.length?sub[0].act:null;
     });
     // 호가 밴드
-    var listing=getListing(cx,'84');
+    var listing=getListing(cx,selType);
     var liMin=ML.map(function(){return listing.min;});
     var liMax=ML.map(function(){return listing.max;});
     charts.c1=new Chart(document.getElementById('c1').getContext('2d'),{type:'line',
@@ -528,7 +595,7 @@ function renderVs(){
     var sub=DATA.m.filter(function(x){return x.mo===mi&&x.t==='84';});
     return sub.length?sub.sort(function(a,b){return b.act-a.act;})[0].act:null;
   });
-  var listing=getListing(cx,'84');
+  var listing=getListing(cx,selType);
   var liMin=ML.map(function(){return listing.min;});
   var liMax=ML.map(function(){return listing.max;});
 
@@ -562,10 +629,11 @@ function renderVs(){
 
   // 전세 호가 vs 실거래
   var jActData=ML.map(function(_,mi){
-    var sub=DATA.j.filter(function(x){return x.mo===mi&&x.t==='84';});
+    var sub=DATA.j.filter(function(x){return x.mo===mi&&x.t===selType;});
     return sub.length?av(sub.map(function(x){return x.act;})):null;
   });
-  var bp84=(cx.bp&&(cx.bp[84]||cx.bp[59]||Object.values(cx.bp)[0]))||70000;
+  var selTi2=parseInt(selType);
+  var bp84=(cx.bp&&(cx.bp[selTi2]||cx.bp[84]||cx.bp[59]||Object.values(cx.bp)[0]))||70000;
   var jLiVal=Math.round(bp84*(cx.rr||0.63));
   var jMin=ML.map(function(){return Math.round(jLiVal*0.97);});
   var jMax=ML.map(function(){return Math.round(jLiVal*1.03);});
@@ -651,5 +719,6 @@ function smPick(el){
 
 renderSm();
 </script>
+<div id="admin-lock" onclick="adminUnlock()" title="관리자">🔒</div>
 </body>
 </html>
