@@ -169,8 +169,8 @@ tr:hover td{background:#f0f8f6}
         <div style="flex:1;border:2px dashed #b8d8d3;border-radius:8px;padding:16px;text-align:center;cursor:pointer;background:#f6faf9" id="dropZone" onclick="document.getElementById('fileInput').click()">
           <div style="font-size:24px;margin-bottom:6px">📋</div>
           <div style="font-size:11px;font-weight:600;color:#2B7A6F;margin-bottom:3px">시세 엑셀 파일 클릭하여 업로드</div>
-          <div style="font-size:10px;color:#999">시세입력_템플릿.xlsx 형식</div>
-          <input type="file" id="fileInput" accept=".xlsx" style="display:none" onchange="handleFile(this.files[0])">
+          <div style="font-size:10px;color:#999">네이버 크롤링 CSV 또는 시세 xlsx</div>
+          <input type="file" id="fileInput" accept=".xlsx,.csv" style="display:none" onchange="handleFile(this.files[0])">
           <div id="upload-status" style="margin-top:8px;font-size:10px;color:#2B7A6F"></div>
         </div>
         <div style="flex:1;background:#e4f2ef;border-radius:8px;padding:12px;font-size:10px;color:#1a5c52;line-height:1.9">
@@ -543,17 +543,124 @@ function renderSm(){
 }
 function smPick(el){pick(el.getAttribute('data-dong'),el.getAttribute('data-name'));showTab('ov');}
 
-// ── 엑셀 업로드 (네이버 호가)
+// ── 네이버 호가 파일 업로드 (CSV / Excel 모두 지원)
 function handleFile(file){
   if(!file)return;
   document.getElementById('upload-status').textContent='⏳ 파싱 중...';
-  if(!window.XLSX){
-    var s=document.createElement('script');
-    s.src='https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js';
-    s.onload=function(){parseExcel(file);};
-    document.head.appendChild(s);
-  } else { parseExcel(file); }
+  var ext = file.name.split('.').pop().toLowerCase();
+  if(ext === 'csv'){
+    parseCsv(file);
+  } else {
+    if(!window.XLSX){
+      var s=document.createElement('script');
+      s.src='https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js';
+      s.onload=function(){parseExcel(file);};
+      document.head.appendChild(s);
+    } else { parseExcel(file); }
+  }
 }
+
+// 네이버 크롤링 CSV 파서
+// 컬럼: 매물번호,매물종류,매물명,거래유형,가격,월세,공급면적,전용면적,...
+function parseCsv(file){
+  var reader = new FileReader();
+  reader.onload = function(e){
+    var text = e.target.result;
+    var lines = text.split('\n').map(function(l){return l.replace(/\r/,'');});
+    if(!lines.length){return;}
+    var header = lines[0].split(',');
+    var idxName   = header.indexOf('매물명');
+    var idxType   = header.indexOf('거래유형');
+    var idxPrice  = header.indexOf('가격');
+    var idxMonthly= header.indexOf('월세');
+    var idxArea   = header.indexOf('전용면적');
+    if(idxName < 0){ alert('매물명 컬럼을 찾을 수 없습니다.'); return; }
+
+    // 단지별 타입별 가격 수집
+    var tmp = {};
+    for(var i=1;i<lines.length;i++){
+      var cols = splitCsvLine(lines[i]);
+      if(!cols[idxName]) continue;
+      var name     = cols[idxName].trim();
+      var tradeType= cols[idxType] ? cols[idxType].trim() : '매매';
+      var priceStr = cols[idxPrice] ? cols[idxPrice].trim() : '';
+      var monStr   = cols[idxMonthly] ? cols[idxMonthly].trim() : '-';
+      var areaStr  = cols[idxArea] ? cols[idxArea].trim() : '';
+
+      // 면적 → 타입 bin
+      var areaNum = parseFloat(areaStr.replace(/[^0-9.]/,''));
+      var tbin = areaNum<50?40:areaNum<66?59:areaNum<80?74:areaNum<96?84:areaNum<130?114:135;
+
+      // 가격 파싱 (억 단위 → 만원)
+      var price = parseNaverPrice(priceStr);
+      var mon   = parseNaverPrice(monStr);
+      if(!price) continue;
+
+      var key = name+'|'+tbin+'|'+tradeType;
+      if(!tmp[key]) tmp[key]={name:name,tbin:tbin,type:tradeType,prices:[],mons:[]};
+      tmp[key].prices.push(price);
+      if(mon > 0) tmp[key].mons.push(mon);
+    }
+
+    // naverData 업데이트
+    var cnt = 0;
+    for(var k in tmp){
+      var d = tmp[k];
+      var avgPrice = Math.round(d.prices.reduce(function(s,x){return s+x;},0)/d.prices.length/100)*100;
+      var minPrice = Math.min.apply(null, d.prices);
+      if(!naverData[d.name]) naverData[d.name]={};
+      if(!naverData[d.name][d.tbin]) naverData[d.name][d.tbin]={};
+      if(d.type === '매매'){
+        naverData[d.name][d.tbin].sale    = avgPrice;
+        naverData[d.name][d.tbin].saleMin = minPrice;
+        naverData[d.name][d.tbin].saleN   = d.prices.length;
+      } else if(d.type === '전세'){
+        naverData[d.name][d.tbin].rent    = avgPrice;
+        naverData[d.name][d.tbin].rentN   = d.prices.length;
+      } else if(d.type === '월세'){
+        naverData[d.name][d.tbin].dep     = avgPrice;
+        naverData[d.name][d.tbin].mon     = d.mons.length?Math.round(d.mons.reduce(function(s,x){return s+x;},0)/d.mons.length/10)*10:0;
+      }
+      cnt++;
+    }
+
+    var uniqCx = Object.keys(naverData).length;
+    document.getElementById('upload-status').textContent = '✓ '+uniqCx+'개 단지 / '+cnt+'개 타입 호가 반영';
+    document.getElementById('vs-notice').textContent = '✅ 네이버 호가 반영 ('+uniqCx+'개 단지) | 파일: '+file.name;
+    document.getElementById('vs-notice').style.background = '#e8f4f2';
+    document.getElementById('vs-notice').style.color = '#1a5c52';
+    if(sel){renderOv();renderVs();renderCp();renderSm();}
+  };
+  reader.readAsText(file, 'UTF-8');
+}
+
+function parseNaverPrice(str){
+  if(!str || str==='-') return 0;
+  str = str.trim().replace(/,/g,'').replace(/ /g,'');
+  // "12억", "12억5000만", "5000만" 형식 처리
+  var eok = 0, man = 0;
+  var mEok = str.match(/([0-9.]+)억/);
+  var mMan = str.match(/억([0-9]+)만|^([0-9]+)만/);
+  if(mEok) eok = parseFloat(mEok[1]) * 10000;
+  if(mMan) man = parseInt(mMan[1]||mMan[2]);
+  if(eok || man) return Math.round(eok + man);
+  // 숫자만 있으면 만원 단위
+  var n = parseFloat(str);
+  return isNaN(n) ? 0 : n;
+}
+
+function splitCsvLine(line){
+  var result=[], cur='', inQ=false;
+  for(var i=0;i<line.length;i++){
+    var c=line[i];
+    if(c==='"'){inQ=!inQ;}
+    else if(c===','&&!inQ){result.push(cur.replace(/^"|"$/g,''));cur='';}
+    else{cur+=c;}
+  }
+  result.push(cur.replace(/^"|"$/g,''));
+  return result;
+}
+
 function parseExcel(file){
   var reader=new FileReader();
   reader.onload=function(e){
@@ -570,7 +677,6 @@ function parseExcel(file){
       cnt++;
     }
     document.getElementById('upload-status').textContent='✓ '+cnt+'개 단지 호가 반영 완료';
-    document.getElementById('vs-notice').textContent='✅ 네이버 호가 데이터 반영됨 ('+cnt+'개 단지)';
     if(sel){renderOv();renderVs();renderCp();}
   };
   reader.readAsArrayBuffer(file);
