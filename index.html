@@ -112,9 +112,8 @@ tr:hover td{background:#f0f8f6}
 
   <!-- ⚖️ 호가 vs 실거래 패널 -->
   <div class="panel" id="p-vs">
-    <div class="notice" id="vs-notice">
-      ⚠️ 네이버 부동산 매물 호가는 아직 미연동 상태입니다. 현재는 실거래가 기준 추정 호가(+3%)로 표시됩니다.
-      네이버 크롤링 데이터 업로드 후 자동으로 실제 호가로 교체됩니다.
+    <div class="notice" id="vs-notice" style="display:none">
+      📋 네이버 시세 파일을 업로드하면 실제 매물 호가로 업데이트됩니다.
     </div>
     <div class="charts">
       <div class="chart-box">
@@ -159,17 +158,17 @@ tr:hover td{background:#f0f8f6}
         </div>
       </div>
     </div>
-    <!-- 크롤링 데이터 업로드 안내 -->
+    <!-- 네이버 시세 업로드 -->
     <div class="tbl-box">
       <div class="tbl-hd">
-        <span class="tbl-ttl">📂 네이버 호가 데이터 업로드</span>
-        <span class="tbl-cnt">xlsx 파일 업로드 → 자동 반영</span>
+        <span class="tbl-ttl">📂 네이버 시세 업로드</span>
+        <span class="tbl-cnt">시세 파일 업로드 → 자동 반영</span>
       </div>
       <div style="padding:14px;display:flex;gap:12px;align-items:flex-start">
         <div style="flex:1;border:2px dashed #b8d8d3;border-radius:8px;padding:16px;text-align:center;cursor:pointer;background:#f6faf9" id="dropZone" onclick="document.getElementById('fileInput').click()">
           <div style="font-size:24px;margin-bottom:6px">📋</div>
-          <div style="font-size:11px;font-weight:600;color:#2B7A6F;margin-bottom:3px">시세 엑셀 파일 클릭하여 업로드</div>
-          <div style="font-size:10px;color:#999">네이버 크롤링 CSV 또는 시세 xlsx</div>
+          <div style="font-size:11px;font-weight:600;color:#2B7A6F;margin-bottom:3px">네이버 시세 파일 클릭하여 업로드</div>
+          <div style="font-size:10px;color:#999">네이버 시세 CSV 또는 xlsx</div>
           <input type="file" id="fileInput" accept=".xlsx,.csv" style="display:none" onchange="handleFile(this.files[0])">
           <div id="upload-status" style="margin-top:8px;font-size:10px;color:#2B7A6F"></div>
         </div>
@@ -177,7 +176,7 @@ tr:hover td{background:#f0f8f6}
           <strong style="display:block;margin-bottom:4px">📌 호가 업로드 컬럼 형식</strong>
           단지명 / 타입(㎡) / 매매호가_최저 / 매매호가_평균 / 전세호가_평균 / 월세보증금 / 월세<br>
           <strong style="display:block;margin-top:8px;margin-bottom:2px">⏱ 업데이트 주기</strong>
-          매주 크롤링 데이터 업로드 → 자동 반영
+          매주 시세 파일 업로드 → 자동 반영
         </div>
       </div>
     </div>
@@ -270,7 +269,16 @@ function buildSbFromData(){
   document.getElementById('sbl').innerHTML=html||'<div style="padding:20px;text-align:center;color:#aaa;font-size:11px">데이터 없음 — API 키 등록 필요</div>';
 }
 
-var ML=['11월','12월','1월','2월','3월','4월'];
+// 현재 기준 24개월 레이블 동적 생성
+var ML=(function(){
+  var r=[],d=new Date();
+  d.setMonth(d.getMonth()-23);
+  for(var i=0;i<24;i++){
+    r.push((d.getMonth()+1)+'월');
+    d.setMonth(d.getMonth()+1);
+  }
+  return r;
+})();
 
 function fmt(v){return v?(v/10000).toFixed(1)+'억':'-';}
 function av(a){return a.length?Math.round(a.reduce(function(s,x){return s+x;},0)/a.length):0;}
@@ -322,7 +330,7 @@ function showTab(t){
 function sr(n){return((n*16807+1)&0x7fffffff)/0x7fffffff;}
 function sim(cx){
   var b=cx.name.length*137+(cx.year||2010),R={m:[],j:[],w:[]};
-  for(var mo=0;mo<6;mo++){
+  for(var mo=0;mo<24;mo++){
     var types=cx.types||['84'],cnt=1+Math.floor(sr(b+mo*31)*3);
     for(var i=0;i<cnt;i++){
       var s=b+mo*31+i*7,t=types[i%types.length];
@@ -413,7 +421,7 @@ function renderOv(){
   dc('c1');
   charts.c1=new Chart(document.getElementById('c1').getContext('2d'),{type:'line',
     data:{labels:ML,datasets:[{data:tData,borderColor:col,backgroundColor:col+'22',borderWidth:2,pointBackgroundColor:col,pointRadius:4,tension:.35,spanGaps:true}]},
-    options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},
+    options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:true,position:'top',labels:{font:{size:9},color:'#555',boxWidth:20,usePointStyle:true}}},
       scales:{x:{grid:{color:'rgba(0,0,0,0.04)'},ticks:{font:{size:9},color:'#888'}},
               y:{grid:{color:'rgba(0,0,0,0.04)'},ticks:{font:{size:9},color:'#888',callback:function(v){return(v/10000).toFixed(0)+'억';}}}}}});
   var tc={};arr.forEach(function(x){tc[x.t]=(tc[x.t]||0)+1;});var tK=Object.keys(tc);
@@ -457,10 +465,10 @@ function renderVs(){
   dc('cv1');
   charts.cv1=new Chart(document.getElementById('cv1').getContext('2d'),{type:'line',
     data:{labels:ML,datasets:[
-      {label:'호가',data:liData,borderColor:'#D85A30',backgroundColor:'rgba(216,90,48,0.06)',borderWidth:2,pointRadius:3,tension:0,borderDash:[5,4]},
-      {label:'실거래',data:actData,borderColor:'#BA7517',backgroundColor:'rgba(186,117,23,0.1)',borderWidth:2.5,pointBackgroundColor:'#BA7517',pointRadius:4,tension:.35,spanGaps:true}
+      {label:'호가(네이버)',data:liData,borderColor:'#D85A30',backgroundColor:'rgba(216,90,48,0.04)',borderWidth:2,borderDash:[8,4],pointRadius:4,pointStyle:'circle',pointBackgroundColor:'#fff',pointBorderColor:'#D85A30',pointBorderWidth:2,tension:0},
+      {label:'실거래(국토부)',data:actData,borderColor:'#BA7517',backgroundColor:'rgba(186,117,23,0.1)',borderWidth:2.5,borderDash:[],pointBackgroundColor:'#BA7517',pointRadius:5,pointStyle:'circle',tension:.35,spanGaps:true,fill:true}
     ]},
-    options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},
+    options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:true,position:'top',labels:{font:{size:9},color:'#555',boxWidth:20,usePointStyle:true}}},
       scales:{x:{grid:{color:'rgba(0,0,0,0.04)'},ticks:{font:{size:9},color:'#888'}},
               y:{grid:{color:'rgba(0,0,0,0.04)'},ticks:{font:{size:9},color:'#888',callback:function(v){return(v/10000).toFixed(0)+'억';}}}}}});
 
@@ -483,8 +491,8 @@ function renderVs(){
   dc('cv3');
   charts.cv3=new Chart(document.getElementById('cv3').getContext('2d'),{type:'line',
     data:{labels:ML,datasets:[
-      {label:'전세호가',data:jLiData,borderColor:'#8ab7d8',backgroundColor:'rgba(138,183,216,0.06)',borderWidth:2,pointRadius:3,tension:0,borderDash:[5,4]},
-      {label:'전세실거래',data:jActData,borderColor:'#1B6FA8',backgroundColor:'rgba(27,111,168,0.09)',borderWidth:2.5,pointBackgroundColor:'#1B6FA8',pointRadius:4,tension:.35,spanGaps:true}
+      {label:'전세 호가(네이버)',data:jLiData,borderColor:'#8ab7d8',backgroundColor:'rgba(138,183,216,0.04)',borderWidth:2,borderDash:[8,4],pointRadius:4,pointStyle:'circle',pointBackgroundColor:'#fff',pointBorderColor:'#8ab7d8',pointBorderWidth:2,tension:0},
+      {label:'전세 실거래(국토부)',data:jActData,borderColor:'#1B6FA8',backgroundColor:'rgba(27,111,168,0.09)',borderWidth:2.5,borderDash:[],pointBackgroundColor:'#1B6FA8',pointRadius:5,tension:.35,spanGaps:true,fill:true}
     ]},
     options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},
       scales:{x:{grid:{color:'rgba(0,0,0,0.04)'},ticks:{font:{size:9},color:'#888'}},
@@ -560,8 +568,8 @@ function handleFile(file){
   }
 }
 
-// 네이버 크롤링 CSV 파서
-// 컬럼: 매물번호,매물종류,매물명,거래유형,가격,월세,공급면적,전용면적,...
+// 네이버 시세 CSV 파서
+
 function parseCsv(file){
   var reader = new FileReader();
   reader.onload = function(e){
@@ -626,7 +634,8 @@ function parseCsv(file){
 
     var uniqCx = Object.keys(naverData).length;
     document.getElementById('upload-status').textContent = '✓ '+uniqCx+'개 단지 / '+cnt+'개 타입 호가 반영';
-    document.getElementById('vs-notice').textContent = '✅ 네이버 호가 반영 ('+uniqCx+'개 단지) | 파일: '+file.name;
+    document.getElementById('vs-notice').style.display='';
+    document.getElementById('vs-notice').textContent = '✅ 네이버 시세 반영: '+uniqCx+'개 단지 / 파일: '+file.name;
     document.getElementById('vs-notice').style.background = '#e8f4f2';
     document.getElementById('vs-notice').style.color = '#1a5c52';
     if(sel){renderOv();renderVs();renderCp();renderSm();}
