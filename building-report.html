@@ -1,0 +1,807 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>매각물건현황조사 보고서 생성기</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700;900&family=IBM+Plex+Mono:wght@400;600&display=swap');
+:root{--navy:#1B3A6B;--blue:#2E75B6;--accent:#C9302C;--green:#2A7A4B;--light:#EDF2FA;--yellow:#FFF9E6;--gbg:#EEF6EE;--bg:#F4F6FA;--gray:#888;--border:#D0D8E8;}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:'Noto Sans KR',sans-serif;background:var(--bg);color:#222;min-height:100vh;}
+.header{background:var(--navy);color:white;padding:12px 20px;display:flex;align-items:center;gap:10px;}
+.header h1{font-size:15px;font-weight:700;}
+.header p{font-size:9.5px;opacity:.6;margin-top:1px;}
+.badge{margin-left:auto;background:var(--accent);color:white;font-size:9px;font-weight:700;padding:2px 8px;border-radius:20px;white-space:nowrap;}
+.app{display:flex;height:calc(100vh - 50px);}
+.sidebar{width:385px;min-width:320px;background:white;border-right:1px solid var(--border);overflow-y:auto;display:flex;flex-direction:column;}
+.main{flex:1;overflow-y:auto;background:var(--bg);}
+.section{border-bottom:1px solid var(--border);padding:11px 14px;}
+.slabel{font-size:9px;font-weight:700;color:var(--navy);letter-spacing:1px;text-transform:uppercase;margin-bottom:7px;display:flex;align-items:center;gap:5px;}
+.slabel .num{background:var(--navy);color:white;width:14px;height:14px;border-radius:50%;font-size:8px;display:flex;align-items:center;justify-content:center;}
+label{display:block;font-size:10px;color:var(--gray);margin-bottom:2px;margin-top:6px;}
+label:first-of-type{margin-top:0;}
+input[type=text],input[type=number],input[type=password],select,textarea{width:100%;padding:5px 8px;border:1.5px solid var(--border);border-radius:5px;font-size:11px;font-family:'Noto Sans KR',sans-serif;color:#222;background:#FAFBFD;outline:none;transition:border .15s;}
+input:focus,select:focus,textarea:focus{border-color:var(--blue);background:white;}
+.row2{display:grid;grid-template-columns:1fr 1fr;gap:6px;}
+.row3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:5px;}
+
+/* API 배너 */
+.api-bar{background:#1a1a2e;border-bottom:2px solid var(--accent);padding:9px 14px;}
+/* 파일 업로드 자동입력 */
+.upload-sec{border-bottom:2px solid var(--blue);padding:10px 13px;background:linear-gradient(135deg,#EDF2FA,#E8F4FD);}
+.upload-title{font-size:9.5px;font-weight:700;color:var(--navy);margin-bottom:5px;display:flex;align-items:center;gap:5px;}
+.new-badge{background:var(--blue);color:white;font-size:7.5px;padding:1px 5px;border-radius:10px;}
+.drop-zone{border:2.5px dashed var(--blue);border-radius:7px;padding:12px 8px;text-align:center;cursor:pointer;transition:all .2s;background:white;position:relative;min-height:75px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;}
+.drop-zone:hover,.drop-zone.drag-over{background:var(--light);border-color:var(--navy);}
+.drop-zone.has-file{border-style:solid;border-color:var(--green);background:#EEF6EE;}
+.drop-zone input[type=file]{position:absolute;inset:0;opacity:0;cursor:pointer;width:100%;height:100%;}
+.drop-icon{font-size:22px;opacity:.45;}
+.drop-text{font-size:10px;font-weight:600;color:var(--navy);}
+.drop-sub{font-size:8.5px;color:var(--gray);}
+.upload-btn{width:100%;margin-top:6px;padding:7px;background:var(--blue);color:white;border:none;border-radius:5px;font-size:10.5px;font-weight:700;font-family:'Noto Sans KR',sans-serif;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:4px;}
+.upload-btn:hover:not(:disabled){background:var(--navy);}
+.upload-btn:disabled{background:#AAA;cursor:not-allowed;}
+.upload-res{margin-top:5px;padding:5px 7px;background:white;border-radius:4px;border:1px solid var(--border);font-size:9px;color:var(--gray);line-height:1.5;display:none;}
+.upload-res.show{display:block;}
+.upload-res.ok{border-color:var(--green);color:var(--green);}
+.upload-res.err{border-color:var(--accent);color:var(--accent);}
+.file-types{font-size:8.5px;color:var(--gray);text-align:center;margin-top:3px;}
+.api-bar label{color:#aaa;font-size:9.5px;font-weight:600;}
+.api-note{font-size:8px;color:#555;margin-top:3px;}
+.api-row{display:flex;align-items:center;gap:6px;margin-top:3px;}
+.api-row input{flex:1;background:#0d0d1a;border:1.5px solid #333;color:#7EB8F7;font-family:'IBM Plex Mono',monospace;font-size:10.5px;padding:4px 7px;border-radius:4px;outline:none;}
+.api-row input:focus{border-color:var(--blue);}
+.api-st{font-size:9px;padding:2px 6px;border-radius:3px;font-weight:700;white-space:nowrap;}
+.api-st.ok{background:#1a3a2a;color:#4ade80;}
+.api-st.no{background:#3a1a1a;color:#f87171;}
+
+/* 임대현황 테이블 */
+.rt{width:100%;border-collapse:collapse;font-size:10.5px;}
+.rt th{background:var(--navy);color:white;padding:4px 3px;text-align:center;font-size:9.5px;}
+.rt td{padding:2px;border-bottom:1px solid #EEE;}
+.rt input{padding:3px 4px;font-size:10px;border-radius:3px;}
+.del{background:none;border:none;color:#CCC;cursor:pointer;font-size:11px;padding:1px 3px;}
+.del:hover{color:var(--accent);}
+.addbtn{width:100%;margin-top:5px;padding:5px;border:1.5px dashed var(--border);border-radius:5px;background:none;color:var(--blue);font-size:10.5px;cursor:pointer;font-family:'Noto Sans KR',sans-serif;}
+.addbtn:hover{background:var(--light);}
+.calc{background:var(--light);border-radius:5px;padding:7px 10px;margin-top:7px;}
+.crow{display:flex;justify-content:space-between;padding:2px 0;font-size:10px;}
+.crow .v{font-family:'IBM Plex Mono',monospace;font-weight:600;color:var(--navy);font-size:10px;}
+.crow.hl{border-top:1px solid var(--border);margin-top:3px;padding-top:4px;}
+.crow.hl .v{color:var(--accent);font-size:11px;}
+.chip{background:var(--navy);color:white;font-size:9px;font-weight:700;padding:2px 5px;border-radius:3px;font-family:'IBM Plex Mono',monospace;}
+.genbtn{margin:10px 14px;width:calc(100% - 28px);padding:11px;background:var(--accent);color:white;border:none;border-radius:7px;font-size:13px;font-weight:700;font-family:'Noto Sans KR',sans-serif;cursor:pointer;transition:all .2s;display:flex;align-items:center;justify-content:center;gap:6px;}
+.genbtn:hover:not(:disabled){background:#a82622;transform:translateY(-1px);box-shadow:0 4px 12px rgba(201,48,44,.3);}
+.genbtn:disabled{background:#CCC;cursor:not-allowed;transform:none;}
+.ph{height:100%;display:flex;flex-direction:column;align-items:center;justify-content:center;color:var(--gray);gap:10px;padding:40px;text-align:center;}
+.ph-icon{font-size:52px;opacity:.2;}.ph h2{font-size:14px;color:#AAA;font-weight:500;}.ph p{font-size:11px;color:#BBB;line-height:1.7;}
+.loading-wrap{height:100%;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:16px;}
+.spinner{width:40px;height:40px;border:4px solid var(--light);border-top-color:var(--navy);border-radius:50%;animation:spin .8s linear infinite;}
+@keyframes spin{to{transform:rotate(360deg);}}
+.lmsg{color:var(--navy);font-size:13px;font-weight:500;}.lsub{color:var(--gray);font-size:11px;}
+.dots::after{content:'';animation:dots 1.4s steps(4,end) infinite;}
+@keyframes dots{0%,20%{content:'';}40%{content:'.';}60%{content:'..';}80%,100%{content:'...'}}
+
+/* 보고서 */
+.pg{background:#FFF8E1;border:1px solid #FFD54F;border-radius:5px;padding:6px 11px;margin:9px;font-size:9.5px;color:#795548;line-height:1.5;}
+.ra{background:white;max-width:820px;margin:9px auto 18px;box-shadow:0 2px 18px rgba(0,0,0,.08);border-radius:7px;overflow:hidden;}
+.rtb{background:var(--navy);color:white;padding:7px 14px;display:flex;align-items:center;gap:8px;font-size:11px;}
+.pbtn{margin-left:auto;background:white;color:var(--navy);border:none;padding:4px 10px;border-radius:4px;font-size:10.5px;font-weight:700;cursor:pointer;font-family:'Noto Sans KR',sans-serif;}
+.pbtn:hover{background:var(--light);}
+.rb{padding:28px 36px;}
+.dh{display:flex;justify-content:space-between;padding-bottom:6px;margin-bottom:3px;border-bottom:1px solid var(--border);}
+.dht{font-size:9px;color:var(--navy);font-weight:600;}
+.rc{text-align:center;padding:10px 0 20px;border-bottom:3px solid var(--navy);margin-bottom:20px;}
+.cm{font-size:20px;font-weight:900;color:var(--navy);letter-spacing:5px;margin-bottom:4px;}
+.cms{font-size:10px;color:var(--blue);font-style:italic;margin-bottom:15px;}
+.cn{font-size:18px;font-weight:700;color:var(--navy);margin-bottom:2px;}
+.ca{font-size:11px;color:#666;margin-bottom:2px;}.cd{font-size:9.5px;color:#999;}
+.kg{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:var(--border);border:1px solid var(--border);border-radius:5px;overflow:hidden;margin-bottom:20px;}
+.kc{background:white;padding:9px 10px;text-align:center;}
+.kl{font-size:8.5px;color:var(--gray);font-weight:600;letter-spacing:.4px;margin-bottom:2px;}
+.kv{font-size:13px;font-weight:700;color:var(--navy);font-family:'IBM Plex Mono',monospace;}
+.kv.ac{color:var(--accent);}.kc.dk{background:var(--navy);}
+.kc.dk .kl{color:rgba(255,255,255,.5);}.kc.dk .kv{color:white;}
+.rs{font-size:13px;font-weight:800;color:var(--navy);margin:20px 0 7px;padding-bottom:5px;border-bottom:2px solid var(--navy);display:flex;align-items:center;gap:5px;}
+.rs::before{content:"■";color:var(--blue);font-size:10.5px;}
+.rsb{font-size:11px;font-weight:700;color:var(--blue);margin:12px 0 5px;}
+.tbl{width:100%;border-collapse:collapse;font-size:10.5px;margin:5px 0;}
+.tbl th{background:var(--navy);color:white;padding:5px 7px;text-align:center;font-size:9.5px;}
+.tbl td{padding:5px 7px;border-bottom:1px solid #EEE;text-align:center;}
+.tbl tr:last-child td{font-weight:700;background:var(--light);color:var(--navy);}
+.tbl .left{text-align:left;}.tbl .acc{color:var(--accent);font-weight:700;}
+.tbl .star td{background:var(--yellow);color:var(--accent);font-weight:700;}
+.eb{background:var(--light);border-left:4px solid var(--blue);border-radius:0 5px 5px 0;padding:10px 13px;margin:7px 0;font-size:11px;line-height:1.85;color:#333;}
+.eb .et{font-weight:700;color:var(--navy);margin-bottom:5px;font-size:11.5px;}
+.eb.yw{background:var(--yellow);border-left-color:var(--accent);}
+.txt{font-size:11px;line-height:1.9;color:#444;margin:5px 0;white-space:pre-wrap;}
+.nt{font-size:9.5px;color:#999;font-style:italic;margin-top:3px;}
+
+/* AI 생성 섹션 (파란 배경으로 구분) */
+.ai-section{background:#F0F6FF;border:1px solid var(--blue);border-radius:5px;padding:12px 14px;margin:7px 0;}
+.ai-section .ai-tag{font-size:8.5px;background:var(--blue);color:white;padding:1px 6px;border-radius:10px;margin-bottom:6px;display:inline-block;}
+.ai-text{font-size:11px;line-height:1.9;color:#333;white-space:pre-wrap;}
+
+/* 편집 블록 */
+.ew{position:relative;}
+.eb2{position:absolute;top:-2px;right:0;background:var(--blue);color:white;font-size:8px;font-weight:700;padding:2px 6px;border-radius:3px;cursor:pointer;user-select:none;z-index:10;}
+.eb2:hover{background:var(--navy);}
+.ea{font-size:11px;line-height:1.9;color:#444;margin:5px 0;white-space:pre-wrap;}
+.et2{width:100%;font-size:11px;line-height:1.9;color:#222;font-family:'Noto Sans KR',sans-serif;border:2px solid var(--blue);border-radius:5px;padding:8px 10px;background:#FAFEFF;resize:vertical;min-height:80px;outline:none;display:none;}
+.es{display:none;margin-top:4px;padding:4px 12px;background:var(--blue);color:white;border:none;border-radius:4px;font-size:10.5px;font-weight:700;cursor:pointer;font-family:'Noto Sans KR',sans-serif;}
+
+/* 꼬릿글 */
+.df{border-top:1px solid var(--border);margin-top:24px;padding-top:9px;display:flex;justify-content:space-between;align-items:center;gap:12px;}
+.ai2{flex:1;border:none;border-bottom:1.5px solid var(--border);padding:3px 2px;font-size:11px;font-family:'Noto Sans KR',sans-serif;color:#333;background:transparent;outline:none;}
+.ai2:focus{border-bottom-color:var(--blue);}
+.fd{font-size:9px;color:#AAA;font-style:italic;text-align:right;white-space:nowrap;flex-shrink:0;}
+
+@media print{
+  .header,.sidebar,.rtb,.eb2,.es,.pg{display:none!important;}
+  .et2{display:none!important;}.ea{display:block!important;}
+  .app{display:block;height:auto;}.main{background:white;}
+  .ra{box-shadow:none;margin:0;border-radius:0;max-width:100%;}.rb{padding:12px 20px;}
+  .ai2{border-bottom:none;}
+}
+</style>
+</head>
+<body>
+<div class="header">
+  <span style="font-size:22px">🏢</span>
+  <div><h1>수익형 부동산 매각물건현황조사 보고서 생성기</h1>
+  <p>지번 입력 → AI가 실시간 시장조사 → 주소 맞춤형 보고서 자동 생성</p></div>
+  <span class="badge">AI 실시간 시장조사</span>
+</div>
+
+<div class="app">
+<div class="sidebar">
+
+<!-- 파일 업로드 자동입력 (스타일은 상단에 추가됨) -->
+<!-- API 키 (localStorage 저장) -->
+<div class="api-bar">
+  <label>🔑 Anthropic API Key <span style="font-size:8px;color:#4ade80;">(한 번 입력 후 자동 저장)</span></label>
+  <div class="api-row">
+    <input type="password" id="apiKey" placeholder="sk-ant-api03-..." oninput="saveKey()">
+    <span class="api-st no" id="apiSt">미입력</span>
+  </div>
+  <div class="api-note">이 브라우저에 저장됨 · console.anthropic.com에서 발급 · AI 시장조사에 사용</div>
+</div>
+
+<!-- ★ 파일 업로드 자동입력 -->
+<div class="upload-sec">
+  <div class="upload-title">
+    <span>📂 외부 파일 업로드 → 자동 입력</span>
+    <span class="new-badge">AI</span>
+  </div>
+  <div class="drop-zone" id="uploadZone">
+    <input type="file" id="uploadFile" accept=".pdf,.png,.jpg,.jpeg,.xlsx,.xls,.csv,.hwp,image/*" onchange="onUploadFile(this)">
+    <span class="drop-icon">📄</span>
+    <span class="drop-text">파일을 여기에 드래그&드롭</span>
+    <span class="drop-sub">또는 클릭하여 파일 선택</span>
+  </div>
+  <div class="file-types">지원 형식: PDF · 이미지(PNG/JPG) · 엑셀(xlsx/csv) · 캡처 화면</div>
+  <button class="upload-btn" id="uploadBtn" onclick="runUpload()" disabled>
+    🤖 AI가 파일 읽어서 자동 입력
+  </button>
+  <div class="upload-res" id="uploadRes"></div>
+</div>
+  <label>🔑 Anthropic API Key <span style="font-size:8px;color:#4ade80;">(한 번 입력 후 자동 저장)</span></label>
+  <div class="api-row">
+    <input type="password" id="apiKey" placeholder="sk-ant-api03-..." oninput="saveKey()">
+    <span class="api-st no" id="apiSt">미입력</span>
+  </div>
+  <div class="api-note">이 브라우저에 저장됨 · console.anthropic.com에서 발급 · AI 시장조사에 사용</div>
+</div>
+
+<!-- 1. 기본정보 -->
+<div class="section">
+  <div class="slabel"><span class="num">1</span> 물건 기본 정보</div>
+  <label>건물명</label><input type="text" id="bn" placeholder="준프라자">
+  <label>지번 주소 <span style="color:var(--accent);font-size:9px;">★ AI 시장조사에 활용</span></label>
+  <input type="text" id="addr" placeholder="경기도 용인시 수지구 동천동 411, 411-2">
+  <div class="row3">
+    <div><label>토지면적(평)</label><input type="number" id="la" placeholder="966"></div>
+    <div><label>연면적(평)</label><input type="number" id="ta" placeholder="1076"></div>
+    <div><label>용도지역</label>
+      <select id="zt">
+        <option value="자연녹지지역">자연녹지</option><option value="생산녹지지역">생산녹지</option>
+        <option value="일반상업지역">일반상업</option><option value="근린상업지역">근린상업</option>
+        <option value="준주거지역">준주거</option><option value="제2종일반주거지역">2종일반주거</option>
+      </select>
+    </div>
+  </div>
+  <label>주용도</label><input type="text" id="mu" placeholder="제1종근린생활/다가구">
+  <label>지역 입지 특징 (AI 조사 보완용)</label>
+  <textarea id="loc" rows="2" style="resize:vertical;font-size:10.5px;" placeholder="예) 신분당선 역세권, 분당생활권, 수지구 핵심 상권"></textarea>
+</div>
+
+<!-- 2. 임대현황 -->
+<div class="section">
+  <div class="slabel"><span class="num">2</span> 임대현황</div>
+  <table class="rt">
+    <thead><tr><th>호실</th><th>용도</th><th>보증금(만)</th><th>월세(만)</th><th></th></tr></thead>
+    <tbody id="rows"></tbody>
+  </table>
+  <button class="addbtn" onclick="addRow()">+ 임차인 추가</button>
+  <div class="calc">
+    <div class="crow"><span>보증금 합계</span><span class="v" id="cD">─</span></div>
+    <div class="crow"><span>월 임대수익</span><span class="v" id="cM">─</span></div>
+    <div class="crow"><span>연 임대수익</span><span class="v" id="cA">─</span></div>
+    <div class="crow"><span>보증금 운용이익(3.5%)</span><span class="v" id="cDI">─</span></div>
+    <div class="crow hl"><span><b>실질 연수익</b></span><span class="v" id="cT">─</span></div>
+  </div>
+</div>
+
+<!-- 3. 매도조건 -->
+<div class="section">
+  <div class="slabel"><span class="num">3</span> 매도 조건</div>
+  <label>매도 희망가 (억원)</label>
+  <input type="number" id="ask" placeholder="160" step="0.5" oninput="recalc()">
+  <label>적용 Cap Rate (%)</label>
+  <select id="capSel" onchange="onCap()">
+    <option value="2.8">2.8% — 서울 도심 A급</option>
+    <option value="3.0" selected>3.0% — 수도권 역세권 우량</option>
+    <option value="3.2">3.2% — 수도권 우량 하단</option>
+    <option value="3.5">3.5% — 수도권 일반 평균</option>
+    <option value="custom">직접 입력</option>
+  </select>
+  <div id="cw" style="display:none;margin-top:4px;"><input type="number" id="cc" placeholder="예: 3.1" step="0.1" oninput="recalc()"></div>
+  <div class="calc" style="margin-top:7px;">
+    <div class="crow"><span>내재 Cap Rate</span><span class="chip" id="ic">─</span></div>
+    <div class="crow"><span>시장기준 역산가</span><span class="v" id="mv">─</span></div>
+    <div class="crow hl"><span><b>가격 타당성</b></span><span class="v" id="vld" style="font-size:10px">─</span></div>
+  </div>
+</div>
+
+<!-- 4. 작성자 -->
+<div class="section">
+  <div class="slabel"><span class="num">4</span> 작성자</div>
+  <input type="text" id="authorSide" value="수지스타공인중개사 박 종 영 공인중개사/부동산학박사 jarirealtor@gmail.com">
+</div>
+
+<button class="genbtn" id="genBtn" onclick="gen()">
+  🤖 AI 시장조사 + 보고서 생성
+</button>
+</div><!-- /sidebar -->
+
+<div class="main" id="main">
+  <div class="ph">
+    <div class="ph-icon">🏢</div>
+    <h2>지번 주소를 입력하고<br>AI 시장조사 + 보고서 생성을 누르세요</h2>
+    <p>
+      <b>AI가 해당 지역을 실시간 조사</b>하여<br>
+      주소별 맞춤 시장현황, Cap Rate 근거,<br>
+      종합의견을 자동으로 작성합니다.<br><br>
+      같은 양식으로 지번만 바꾸면<br>완전히 다른 내용의 보고서가 생성됩니다.<br><br>
+      💡 <b>인쇄:</b> Chrome → 더보기 → "머릿글 및 바닥글" 해제
+    </p>
+  </div>
+</div>
+</div><!-- /app -->
+
+<script>
+/* ─── 파일 업로드 자동입력 ─────────────────────── */
+var uploadFileData = null;   // {type, base64, name, mediaType}
+
+// 드래그앤드롭
+(function(){
+  var dz = document.getElementById('uploadZone');
+  dz.addEventListener('dragover', function(e){e.preventDefault();dz.classList.add('drag-over');});
+  dz.addEventListener('dragleave', function(){dz.classList.remove('drag-over');});
+  dz.addEventListener('drop', function(e){
+    e.preventDefault(); dz.classList.remove('drag-over');
+    var f = e.dataTransfer.files[0];
+    if(f) setUploadFile(f);
+  });
+})();
+
+// 클립보드 붙여넣기 (이미지)
+document.addEventListener('paste', function(e){
+  var items = e.clipboardData && e.clipboardData.items;
+  if(!items) return;
+  for(var i=0;i<items.length;i++){
+    if(items[i].type.startsWith('image/')){
+      setUploadFile(items[i].getAsFile());
+      break;
+    }
+  }
+});
+
+function onUploadFile(input){ if(input.files[0]) setUploadFile(input.files[0]); }
+
+function setUploadFile(file){
+  var dz = document.getElementById('uploadZone');
+  var ext = file.name.split('.').pop().toLowerCase();
+
+  // 엑셀/CSV → 텍스트로 읽기
+  if(ext === 'csv'){
+    var r = new FileReader();
+    r.onload = function(e){
+      uploadFileData = {type:'text', content:e.target.result, name:file.name};
+      dz.classList.add('has-file');
+      dz.querySelector('.drop-text').textContent = '✅ ' + file.name;
+      dz.querySelector('.drop-sub').textContent  = 'CSV 파일 로드 완료';
+      document.getElementById('uploadBtn').disabled = false;
+      showUploadRes('파일 준비 완료. "AI가 파일 읽어서 자동 입력" 버튼을 누르세요.','');
+    };
+    r.readAsText(file, 'UTF-8');
+    return;
+  }
+
+  // PDF / 이미지 → base64
+  var mediaType = ext === 'pdf' ? 'application/pdf'
+    : ext === 'jpg' || ext === 'jpeg' ? 'image/jpeg'
+    : ext === 'png' ? 'image/png'
+    : file.type || 'image/png';
+
+  var r2 = new FileReader();
+  r2.onload = function(e){
+    var b64 = e.target.result.split(',')[1];
+    uploadFileData = {
+      type: ext === 'pdf' ? 'document' : 'image',
+      base64: b64, mediaType: mediaType, name: file.name
+    };
+    dz.classList.add('has-file');
+    dz.querySelector('.drop-text').textContent = '✅ ' + file.name;
+    dz.querySelector('.drop-sub').textContent  = (ext==='pdf'?'PDF':'이미지') + ' 로드 완료';
+    document.getElementById('uploadBtn').disabled = false;
+    showUploadRes('파일 준비 완료. "AI가 파일 읽어서 자동 입력" 버튼을 누르세요.','');
+  };
+  r2.readAsDataURL(file);
+}
+
+function showUploadRes(msg, cls){
+  var el = document.getElementById('uploadRes');
+  el.textContent = msg; el.className = 'upload-res show ' + (cls||'');
+}
+
+async function runUpload(){
+  var apiKey = document.getElementById('apiKey').value.trim();
+  if(!apiKey || !apiKey.startsWith('sk-ant-')){alert('API 키를 먼저 입력해주세요.');return;}
+  if(!uploadFileData){alert('파일을 먼저 업로드하세요.');return;}
+
+  document.getElementById('uploadBtn').disabled = true;
+  showUploadRes('AI가 파일을 분석 중입니다...','');
+
+  var prompt = '이 파일은 부동산 관련 문서입니다.\n'
+    +'아래 항목을 파일에서 읽어 JSON으로만 응답하세요. 다른 말은 절대 하지 마세요.\n\n'
+    +'{\n'
+    +'  "bn": "건물명",\n'
+    +'  "addr": "지번 주소 (전체)",\n'
+    +'  "la": "토지면적 숫자만 (평)",\n'
+    +'  "ta": "연면적 숫자만 (평)",\n'
+    +'  "zt": "용도지역 (자연녹지지역/일반상업지역/근린상업지역/준주거지역/제2종일반주거지역 중 하나)",\n'
+    +'  "mu": "주용도",\n'
+    +'  "loc": "입지 특징 (간략히)",\n'
+    +'  "ask": "매도 희망가 숫자만 (억원)",\n'
+    +'  "tenants": [\n'
+    +'    {"unit":"호실명", "use":"용도", "deposit":"보증금 숫자만(만원)", "rent":"월세 숫자만(만원)"}\n'
+    +'  ]\n'
+    +'}\n\n'
+    +'임차인(테넌트) 목록이 있으면 tenants 배열에 모두 포함하세요.\n'
+    +'값을 찾을 수 없으면 빈 문자열("")로 두세요. JSON만 응답하세요.';
+
+  // 메시지 구성
+  var contentParts = [];
+  if(uploadFileData.type === 'text'){
+    contentParts = [{type:'text', text:'[파일 내용]\n'+uploadFileData.content+'\n\n'+prompt}];
+  } else if(uploadFileData.type === 'document'){
+    contentParts = [
+      {type:'document', source:{type:'base64', media_type:uploadFileData.mediaType, data:uploadFileData.base64}},
+      {type:'text', text:prompt}
+    ];
+  } else {
+    contentParts = [
+      {type:'image', source:{type:'base64', media_type:uploadFileData.mediaType, data:uploadFileData.base64}},
+      {type:'text', text:prompt}
+    ];
+  }
+
+  try{
+    var res = await fetch('https://api.anthropic.com/v1/messages',{
+      method:'POST',
+      headers:{
+        'Content-Type':'application/json',
+        'x-api-key':apiKey,
+        'anthropic-version':'2023-06-01',
+        'anthropic-dangerous-direct-browser-access':'true'
+      },
+      body:JSON.stringify({
+        model:'claude-sonnet-4-20250514',
+        max_tokens:1000,
+        messages:[{role:'user', content:contentParts}]
+      })
+    });
+    if(!res.ok){var eb=await res.text();throw new Error('API '+res.status+': '+eb);}
+    var data = await res.json();
+    var raw  = (data.content||[]).find(function(b){return b.type==='text';});
+    if(!raw) throw new Error('응답 없음');
+    var txt  = raw.text.trim().replace(/^```json\s*/,'').replace(/^```\s*/,'').replace(/\s*```$/,'');
+    var obj  = JSON.parse(txt);
+
+    // 폼에 자동 입력
+    if(obj.bn)   document.getElementById('bn').value   = obj.bn;
+    if(obj.addr) document.getElementById('addr').value = obj.addr;
+    if(obj.la)   document.getElementById('la').value   = obj.la;
+    if(obj.ta)   document.getElementById('ta').value   = obj.ta;
+    if(obj.zt){
+      var s=document.getElementById('zt');
+      for(var i=0;i<s.options.length;i++){
+        if(s.options[i].value===obj.zt||obj.zt.includes(s.options[i].value)){s.selectedIndex=i;break;}
+      }
+    }
+    if(obj.mu)   document.getElementById('mu').value   = obj.mu;
+    if(obj.loc)  document.getElementById('loc').value  = obj.loc;
+    if(obj.ask)  document.getElementById('ask').value  = obj.ask;
+
+    // 임차인 자동 입력
+    if(obj.tenants && obj.tenants.length > 0){
+      // 기존 행 삭제
+      document.getElementById('rows').innerHTML = '';
+      obj.tenants.forEach(function(t){
+        addRow({u:t.unit||'', use:t.use||'', d:+t.deposit||0, r:+t.rent||0});
+      });
+    }
+    recalc();
+
+    var cnt = (obj.tenants||[]).length;
+    showUploadRes('✅ 자동입력 완료! 임차인 ' + cnt + '개 포함. 내용을 확인·수정 후 보고서를 생성하세요.','ok');
+  }catch(e){
+    showUploadRes('❌ 오류: '+e.message,'err');
+  }
+  document.getElementById('uploadBtn').disabled = false;
+}
+
+/* ─── 기존 recalc 등 ────────────────────────── */
+const DEF=[
+  {u:"B101",use:"제1종근린생활",d:3000,r:260},
+  {u:"B102",use:"제1종근린생활",d:3000,r:230},
+  {u:"101",use:"프랜차이즈음식점",d:5000,r:450},
+  {u:"102",use:"프랜차이즈음식점",d:5000,r:260},
+  {u:"103",use:"프랜차이즈음식점",d:5000,r:420},
+  {u:"201",use:"제1종근린생활",d:5000,r:240},
+  {u:"202",use:"제1종근린생활",d:1000,r:120},
+  {u:"203",use:"프랜차이즈/유통",d:10000,r:450},
+  {u:"3층전체",use:"프랜차이즈/유통",d:10000,r:750},
+  {u:"4층전체",use:"다가구원룸",d:19000,r:850},
+];
+
+/* ─── localStorage API 키 ─────────────────────── */
+(function(){
+  const k=localStorage.getItem('building_api_key')||'';
+  if(k){document.getElementById('apiKey').value=k;updateApiSt(k);}
+})();
+function saveKey(){
+  const k=document.getElementById('apiKey').value.trim();
+  localStorage.setItem('building_api_key',k);
+  updateApiSt(k);
+}
+function updateApiSt(k){
+  const el=document.getElementById('apiSt');
+  if(k.startsWith('sk-ant-')){el.textContent='✓ 저장됨';el.className='api-st ok';}
+  else{el.textContent='미입력';el.className='api-st no';}
+}
+
+/* ─── 임대현황 ──────────────────────────────────── */
+function addRow(d={}){
+  const tb=document.getElementById('rows');
+  const tr=document.createElement('tr');
+  tr.innerHTML=`<td><input type="text" value="${d.u||''}" placeholder="호실" style="width:58px" oninput="recalc()"></td>
+  <td><input type="text" value="${d.use||''}" placeholder="용도" style="width:92px" oninput="recalc()"></td>
+  <td><input type="number" value="${d.d||''}" placeholder="0" style="width:62px;text-align:right" oninput="recalc()"></td>
+  <td><input type="number" value="${d.r||''}" placeholder="0" style="width:50px;text-align:right" oninput="recalc()"></td>
+  <td><button class="del" onclick="this.closest('tr').remove();recalc()">✕</button></td>`;
+  tb.appendChild(tr);recalc();
+}
+function getV(){
+  let dep=0,rent=0;
+  document.querySelectorAll('#rows tr').forEach(tr=>{
+    const i=tr.querySelectorAll('input[type=number]');
+    dep+=+i[0]?.value||0;rent+=+i[1]?.value||0;
+  });
+  return{dep,rent};
+}
+function fmt(n){return n>=10000?(n/10000).toFixed(1)+'억원':n.toLocaleString()+'만원';}
+function recalc(){
+  const{dep,rent}=getV();
+  const ann=rent*12,di=Math.round(dep*0.035),tot=ann+di;
+  document.getElementById('cD').textContent=fmt(dep);
+  document.getElementById('cM').textContent=rent.toLocaleString()+'만원';
+  document.getElementById('cA').textContent=fmt(ann);
+  document.getElementById('cDI').textContent=di.toLocaleString()+'만원/년';
+  document.getElementById('cT').textContent=fmt(tot);
+  const ask=+document.getElementById('ask').value||0;
+  const cs=document.getElementById('capSel').value;
+  const cap=cs==='custom'?(+document.getElementById('cc')?.value||0):+cs;
+  if(ask>0&&tot>0){
+    document.getElementById('ic').textContent=(tot/(ask*10000)*100).toFixed(2)+'%';
+    if(cap>0){
+      const mv=(tot/(cap/100)/10000).toFixed(1);
+      document.getElementById('mv').textContent=mv+'억원';
+      const diff=(+mv-ask).toFixed(1);
+      const el=document.getElementById('vld');
+      +diff>=0?(el.textContent='✅ 타당 (시장가 대비 '+diff+'억 여유)',el.style.color='var(--green)')
+              :(el.textContent='⚠️ 검토 필요 ('+Math.abs(diff)+'억 초과)',el.style.color='var(--accent)');
+    }
+  }
+}
+function onCap(){document.getElementById('cw').style.display=document.getElementById('capSel').value==='custom'?'block':'none';recalc();}
+function getCap(){const s=document.getElementById('capSel').value;return s==='custom'?(+document.getElementById('cc')?.value||0):+s;}
+
+/* ─── 수익률 환산표 ─────────────────────────────── */
+function yieldRows(annW,totW,cap){
+  return[2.8,3.0,3.2,3.5,4.0].map(r=>{
+    const ra=(annW/(r/100)/1e8).toFixed(1);
+    const ta=(totW/(r/100)/1e8).toFixed(1);
+    const s=Math.abs(r-cap)<0.05;
+    return `<tr class="${s?'star':''}"><td>${r.toFixed(1)}%</td><td>${ra}억원</td><td>${ta}억원</td>
+    <td class="left" style="font-size:9.5px">${s?'★ 본 물건 적용 기준':''}</td></tr>`;
+  }).join('');
+}
+function tenRows(dep){
+  let h='';
+  document.querySelectorAll('#rows tr').forEach(tr=>{
+    const i=tr.querySelectorAll('input');
+    const u=i[0]?.value,use=i[1]?.value,d=+i[2]?.value||0,r=+i[3]?.value||0;
+    if(!u)return;
+    h+=`<tr><td>${u}</td><td class="left">${use}</td><td>${d.toLocaleString()}만원</td>
+    <td class="acc">${r.toLocaleString()}만원</td>
+    <td>${dep>0?(d/dep*100).toFixed(0)+'%':'─'}</td></tr>`;
+  });
+  return h;
+}
+
+/* ─── 편집 블록 ─────────────────────────────────── */
+function toggleEdit(id){
+  const d=document.getElementById('d_'+id),t=document.getElementById('t_'+id);
+  const b=document.getElementById('b_'+id),s=document.getElementById('s_'+id);
+  if(t.style.display==='block'){d.textContent=t.value;d.style.display='block';t.style.display='none';s.style.display='none';b.textContent='✏️ 편집';}
+  else{t.value=d.textContent;d.style.display='none';t.style.display='block';s.style.display='inline-block';b.textContent='취소';t.focus();}
+}
+function editBlock(id,content){
+  return `<div class="ew"><span class="eb2" id="b_${id}" onclick="toggleEdit('${id}')">✏️ 편집</span>
+  <div class="ea" id="d_${id}">${content}</div>
+  <textarea class="et2" id="t_${id}"></textarea>
+  <button class="es" id="s_${id}" onclick="toggleEdit('${id}')">저장</button></div>`;
+}
+
+/* ─── AI 웹검색 + 시장조사 (멀티턴) ──────────────── */
+async function callAiWithSearch(apiKey, prompt) {
+  let messages = [{role:'user', content: prompt}];
+  const headers = {
+    'Content-Type':'application/json',
+    'x-api-key': apiKey,
+    'anthropic-version':'2023-06-01',
+    'anthropic-dangerous-direct-browser-access':'true',
+    'anthropic-beta':'web-search-2025-03-05'
+  };
+  const tools = [{type:'web_search_20250305', name:'web_search'}];
+
+  for(let turn=0; turn<5; turn++){
+    const res = await fetch('https://api.anthropic.com/v1/messages',{
+      method:'POST', headers,
+      body: JSON.stringify({
+        model:'claude-sonnet-4-20250514',
+        max_tokens:1500,
+        tools, messages
+      })
+    });
+    if(!res.ok){const e=await res.text();throw new Error('API '+res.status+': '+e);}
+    const data = await res.json();
+
+    // 최종 응답
+    if(data.stop_reason==='end_turn'){
+      return (data.content||[]).filter(b=>b.type==='text').map(b=>b.text).join('\n').trim();
+    }
+
+    // 툴 호출 → 다음 턴으로
+    if(data.stop_reason==='tool_use'){
+      messages.push({role:'assistant', content: data.content});
+      const results = (data.content||[])
+        .filter(b=>b.type==='tool_use')
+        .map(b=>({type:'tool_result', tool_use_id:b.id, content:''}));
+      messages.push({role:'user', content: results});
+    } else {
+      // stop_reason이 없는 경우 텍스트 추출 시도
+      const txt=(data.content||[]).filter(b=>b.type==='text').map(b=>b.text).join('\n').trim();
+      if(txt) return txt;
+      break;
+    }
+  }
+  return '내용 생성에 실패했습니다.';
+}
+
+/* ─── 보고서 생성 ───────────────────────────────── */
+async function gen(){
+  const apiKey=document.getElementById('apiKey').value.trim();
+  const bn=document.getElementById('bn').value||'대상 건물';
+  const addr=document.getElementById('addr').value||'주소 미입력';
+  const la=+document.getElementById('la').value||0;
+  const ta=+document.getElementById('ta').value||0;
+  const zt=document.getElementById('zoneType')||document.getElementById('zt');
+  const zone=zt?zt.value:'자연녹지지역';
+  const mu=document.getElementById('mu').value;
+  const loc=document.getElementById('loc').value;
+  const ask=+document.getElementById('ask').value||0;
+  const cap=getCap();
+  const author=document.getElementById('authorSide').value;
+  const{dep,rent}=getV();
+  const ann=rent*12,di=Math.round(dep*0.035),tot=ann+di;
+  const ic=ask>0?(tot/(ask*10000)*100).toFixed(2):'─';
+  const mv=cap>0?(tot/(cap/100)/10000).toFixed(1):'0';
+  const diff=(+mv-ask).toFixed(1);
+  const annW=ann*10000,totW=tot*10000;
+  const rowCnt=document.querySelectorAll('#rows tr').length;
+  const now=new Date();
+  const genTime=now.toLocaleDateString('ko-KR',{year:'numeric',month:'long',day:'numeric'})+' '+now.toLocaleTimeString('ko-KR',{hour:'2-digit',minute:'2-digit'});
+
+  if(!apiKey||!apiKey.startsWith('sk-ant-')){
+    alert('상단에 Anthropic API 키를 입력해주세요.\nconsole.anthropic.com → API Keys에서 발급');return;
+  }
+
+  document.getElementById('genBtn').disabled=true;
+
+  /* 로딩 화면 - 3단계 진행 표시 */
+  const setLoading=(msg,sub)=>{
+    document.getElementById('main').innerHTML=`
+    <div class="loading-wrap">
+      <div class="spinner"></div>
+      <div class="lmsg">${msg}<span class="dots"></span></div>
+      <div class="lsub">${sub}</div>
+    </div>`;
+  };
+
+  setLoading('AI가 지역 시장을 조사 중입니다','웹 검색으로 최신 시장 데이터 수집 중');
+
+  /* ── AI 조사 프롬프트 ── */
+  const tenantList = [];
+  document.querySelectorAll('#rows tr').forEach(tr=>{
+    const i=tr.querySelectorAll('input');
+    if(i[0]?.value) tenantList.push(`${i[0].value}(${i[1]?.value}): 보증금${i[2]?.value}만/월세${i[3]?.value}만`);
+  });
+
+  const aiPrompt = `당신은 대한민국 수익형 부동산 투자 분석 전문가입니다.
+아래 물건 정보를 바탕으로 매도인 측에서 매수인을 설득하는 보고서를 작성하세요.
+
+[물건 정보]
+- 건물명: ${bn}
+- 주소: ${addr}
+- 토지면적: ${la}평 / 연면적: ${ta}평 / 용도지역: ${zone} / 주용도: ${mu}
+- 입지 특징: ${loc||'(주소 기반으로 파악)'}
+
+[임대현황]
+${tenantList.join('\n')}
+- 월 임대수익: ${rent.toLocaleString()}만원 / 연 임대수익: ${ann.toLocaleString()}만원
+- 보증금: ${dep.toLocaleString()}만원 / 보증금 운용이익: ${di.toLocaleString()}만원/년
+- 실질 연수익: ${tot.toLocaleString()}만원
+
+[매도 조건]
+- 매도 희망가: ${ask}억원
+- 적용 Cap Rate: ${cap}%
+- 내재 Cap Rate: ${ic}%
+- 역산 자산가치: ${mv}억원
+
+${addr} 주소를 기반으로 웹 검색을 통해 다음 내용을 조사·작성하세요:
+
+[SECTION1] Cap Rate ${cap}% 적용 근거 (3가지, 각 2~3문장)
+- 현재 기준금리 환경과 Cap Rate의 관계
+- ${addr} 해당 지역(구·동)의 입지 프리미엄과 Cap Rate 적용 논거  
+- 임차인 안정성과 Cap Rate 할인 논거
+- 최신 2025~2026년 데이터 기반으로 구체적 수치 포함
+
+[SECTION2] 지역 가치 및 2025~2026년 시장 현황 (4~5개 논점)
+- ${addr} 해당 지역의 최근 부동산 가격 동향 (구체적 통계 포함)
+- 교통망, 생활인프라, 개발호재 등 입지 강점
+- 수익형 부동산 시장 트렌드
+- 해당 지역 상업용 부동산 수요 현황
+
+[SECTION3] 종합 의견 (3~4문장)
+- 수익환원법 기준 매도가 ${ask}억원의 타당성
+- ${addr} 지역 특성 반영한 투자 가치 평가
+- 매수인에 대한 설득력 있는 최종 논거
+
+반드시 [SECTION1], [SECTION2], [SECTION3] 태그로 구분하세요.
+전문적이고 설득력 있게, 구체적 수치와 최신 데이터를 포함하여 작성하세요.`;
+
+  let aiContent = {s1:'',s2:'',s3:''};
+  try{
+    setLoading('AI가 시장 데이터를 분석 중입니다','Cap Rate 근거 및 지역 현황 작성 중');
+    const raw = await callAiWithSearch(apiKey, aiPrompt);
+    const getSec=tag=>{
+      const m=raw.match(new RegExp(`\\[${tag}\\]([\\s\\S]*?)(?=\\[SECTION|$)`));
+      return m?m[1].trim():'─';
+    };
+    aiContent={s1:getSec('SECTION1'),s2:getSec('SECTION2'),s3:getSec('SECTION3')};
+  }catch(e){
+    aiContent={s1:`API 오류: ${e.message}`,s2:'─',s3:'─'};
+  }
+
+  setLoading('보고서를 생성 중입니다','레이아웃 및 표 구성 중');
+  await new Promise(r=>setTimeout(r,300));
+
+  document.getElementById('main').innerHTML=`
+  <div class="pg">⚠️ <b>인쇄 시 파일 경로가 보이면:</b> Chrome 인쇄 → 더보기 설정 → <b>"머릿글 및 바닥글" 체크 해제</b></div>
+  <div class="ra">
+    <div class="rtb"><span>🏢</span><span>${bn} — 매각물건현황조사</span>
+    <button class="pbtn" onclick="window.print()">🖨️ 인쇄 / PDF 저장</button></div>
+    <div class="rb">
+      <div class="dh"><span class="dht">생성일시: ${genTime}</span></div>
+      <div class="rc">
+        <div class="cm">매  각  물  건  현  황  조  사</div>
+        <div class="cms">Property Investment Analysis Report · 2026</div>
+        <div class="cn">${bn}</div>
+        <div class="ca">${addr}</div>
+        <div class="cd"></div>
+      </div>
+      <div class="kg">
+        <div class="kc"><div class="kl">토지 면적</div><div class="kv">${la?la.toLocaleString()+'평':'─'}</div></div>
+        <div class="kc"><div class="kl">연 면 적</div><div class="kv">${ta?ta.toLocaleString()+'평':'─'}</div></div>
+        <div class="kc"><div class="kl">용도지역</div><div class="kv" style="font-size:11px">${zone}</div></div>
+        <div class="kc dk"><div class="kl">월 임대수익</div><div class="kv ac">${rent.toLocaleString()}만원</div></div>
+        <div class="kc dk"><div class="kl">실질 연수익</div><div class="kv">${tot.toLocaleString()}만원</div></div>
+        <div class="kc dk"><div class="kl">매도가 / 내재 Cap Rate</div><div class="kv ac">${ask}억 / ${ic}%</div></div>
+      </div>
+
+      <div class="rs">1. 임대현황 상세</div>
+      <table class="tbl">
+        <thead><tr><th>호실</th><th>용도</th><th>보증금</th><th>월 임대료</th><th>비중</th></tr></thead>
+        <tbody>${tenRows(dep)}</tbody>
+        <tfoot><tr>
+          <td colspan="2"><b>합계 (${rowCnt}개 호실)</b></td>
+          <td>${dep.toLocaleString()}만원 (${(dep/10000).toFixed(1)}억)</td>
+          <td class="acc">${rent.toLocaleString()}만원/月</td>
+          <td>100%</td>
+        </tr></tfoot>
+      </table>
+      <p class="nt">※ 보증금 운용이익(${(dep/10000).toFixed(1)}억×3.5%): 연 ${di.toLocaleString()}만원 | 실질 연수익: ${tot.toLocaleString()}만원</p>
+
+      <div class="rs">2. 수익률별 환산 자산가치</div>
+      <table class="tbl">
+        <thead><tr><th>Cap Rate</th><th>순임대 기준</th><th>실질수익 기준</th><th>비고</th></tr></thead>
+        <tbody>${yieldRows(annW,totW,cap)}</tbody>
+      </table>
+      <div class="ai-section">
+        <span class="ai-tag">🤖 AI 웹검색 기반 · ${addr}</span>
+        <div class="rsb" style="margin-top:6px;">▶ Cap Rate ${cap}% 적용 근거</div>
+        ${editBlock('caprate', aiContent.s1)}
+        <div class="nt" style="margin-top:6px;">→ Cap Rate ${cap}% 기준 역산 자산가치: ${mv}억원 ≥ 매도 희망가 ${ask}억원 (${+diff>=0?diff+'억 여유':'초과'})</div>
+      </div>
+
+      <div class="rs">3. 지역 가치 및 2025~2026년 시장 현황</div>
+      <div class="ai-section">
+        <span class="ai-tag">🤖 AI 실시간 조사 · ${addr} 기준</span>
+        ${editBlock('region', aiContent.s2)}
+      </div>
+
+      <div class="rs">4. 종합 의견</div>
+      <div class="ai-section">
+        <span class="ai-tag">🤖 AI 생성 · 편집 가능</span>
+        ${editBlock('opinion', aiContent.s3)}
+      </div>
+
+      <div class="eb yw" style="margin-top:12px;">
+        <div class="et" style="color:var(--accent)">▶ 결론</div>
+        <p style="font-size:11px;line-height:1.85">
+          Cap Rate <b>${cap}%</b> 기준 역산 자산가치 <b>${mv}억원</b>에 비추어,
+          매도 희망가 <b>${ask}억원</b>은 시장 논리에 완전히 부합하는 합리적 가격입니다.<br>
+          <span style="color:var(--accent);font-weight:700">${ask}억원 미만의 매각은 매도인에게 경제적 합리성이 없습니다.</span>
+        </p>
+      </div>
+
+      <div class="df">
+        <input class="ai2" type="text" id="arRep" value="${author.replace(/"/g,'&quot;')}" oninput="document.getElementById('authorSide').value=this.value">
+        <div class="fd">${genTime}</div>
+      </div>
+    </div>
+  </div>`;
+
+  document.getElementById('genBtn').disabled=false;
+}
+
+/* ─── 초기화 ──────────────────────────────────── */
+DEF.forEach(d=>addRow(d));
+recalc();
+</script>
+</body>
+</html>
