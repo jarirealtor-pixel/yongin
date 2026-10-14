@@ -6,7 +6,7 @@
 <title>집값, 기다리면 내려갈까요? | 오산헤리티지자이 분양 상담</title>
 <meta name="description" content="부동산학 박사·20년 현장 전문가가 묻습니다. 공급 절벽, 규제의 역설, 오르는 분양가. 지금 집을 봐야 하는 이유와 오산헤리티지자이 분양 상담.">
 <meta property="og:title" content="집값, 기다리면 내려갈까요?">
-<meta property="og:description" content="당신 또래는 이미 움직이고 있습니다. 숫자로 확인해 보세요.">
+<meta property="og:description" content="청약통장 없이 계약하는 병점역 생활권 신축. 공급·규제·분양가를 숫자로 확인해 보세요.">
 <meta property="og:image" content="img/hero.jpg">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700;900&display=swap" rel="stylesheet">
@@ -163,7 +163,7 @@ footer a{color:var(--muted)}
 
 <!-- 2. TURN -->
 <section class="scene" id="s2" style="background:var(--navy)">
-  <div class="eyebrow">기분 나쁘셨나요?</div>
+  <div class="eyebrow" id="turnEyebrow">기분 나쁘셨나요?</div>
   <h2>그런데요,<br>세대는 달라도<br><span class="gold">결론은 하나</span>입니다.</h2>
   <p class="lead">"좀 더 지켜보자"는 말이 왜 위험한지,<br>감정이 아니라 <b>숫자 세 개</b>로 보여드릴게요.</p>
   <div class="swipe">↑ 첫 번째 숫자</div>
@@ -187,12 +187,13 @@ footer a{color:var(--muted)}
   <h2>규제가 묶은 건<br>집값이 아니라<br><span class="gold">당신의 선택지</span>였습니다.</h2>
   <p class="lead">6.30 대책으로 화성 동탄·용인 기흥까지 규제지역이 됐습니다. 수요는 사라지지 않고, <b>바로 옆 비규제지역</b>으로 옮겨갑니다. 게다가 이곳은 <b class="gold">청약 없이 바로 계약</b>할 수 있습니다.</p>
   <table class="cmp">
-    <tr><th></th><th>오산헤리티지자이<br>(비규제)</th><th>규제지역<br>신규 분양</th></tr>
+    <tr><th></th><th>오산헤리티지자이<br>(비규제)</th><th>규제지역<br>신규 분양<br>(일반적 기준)</th></tr>
     <tr><td>계약 자격</td><td class="us">누구나</td><td class="them">청약 당첨자만</td></tr>
     <tr><td>청약통장·가점</td><td class="us">필요 없음</td><td class="them">필요</td></tr>
     <tr><td>실거주 의무</td><td class="us">없음</td><td class="them">2년</td></tr>
     <tr><td>전매제한</td><td class="us">6개월</td><td class="them">3년</td></tr>
   </table>
+  <p class="src">규제지역 항목은 일반적인 경우의 예시이며, 실거주 의무·전매제한 기간은 단지별(분양가상한제 적용 여부 등)로 다를 수 있음. 오산헤리티지자이 조건은 입주자모집공고 기준.</p>
 </section>
 
 <!-- 5. PRICE -->
@@ -247,14 +248,14 @@ footer a{color:var(--muted)}
 <!-- 8. PRICE COMPARE -->
 <section class="scene" id="s8">
   <div class="eyebrow">전용 84㎡ 기준</div>
-  <h2>신축인데,<br>옆 동네 구축보다 <span class="gold">낮습니다.</span></h2>
+  <h2>신축인데,<br>인근 준신축 실거래보다 <span class="gold">낮습니다.</span></h2>
   <div class="bars">
-    <div class="bar gd"><div class="lab"><span>오산헤리티지자이 분양가 평균</span><b>8.04억</b></div><div class="track"><div class="fill" data-w="60"></div></div></div>
-    <div class="bar"><div class="lab"><span>병점역 아이파크캐슬 (2021년 입주)</span><b>10.3억</b></div><div class="track"><div class="fill" data-w="77"></div></div></div>
-    <div class="bar"><div class="lab"><span>동탄역 푸르지오 (2017년 입주)</span><b>12.8억</b></div><div class="track"><div class="fill" data-w="96"></div></div></div>
-    <div class="bar"><div class="lab"><span>동탄역 시범호반써밋 (2015년 입주)</span><b>13.3억</b></div><div class="track"><div class="fill" data-w="100"></div></div></div>
+    <div class="bar gd"><div class="lab"><span>오산헤리티지자이 분양가 평균</span><b>8.04억</b></div><div class="track"><div class="fill" data-w="78"></div></div></div>
+    <div class="bar"><div class="lab"><span>병점역 아이파크캐슬 (2021년 입주) 실거래</span><b>10.3억</b></div><div class="track"><div class="fill" data-w="100"></div></div></div>
   </div>
-  <p class="src">오산헤리티지자이: 분양 홍보자료(발코니 확장 포함 평균) / 병점역 아이파크캐슬: 국토부 실거래가 2026.10.1 거래 / 동탄 단지: 국토부 실거래가 2026년 9월 기준 최근 3개월 최고가. 향후 가격을 보장하지 않음</p>
+  <p class="src">오산헤리티지자이: 분양 홍보자료(발코니 확장 포함 평균) / 병점역 아이파크캐슬: 국토부 실거래가 2026.10.1 거래 1건. 개별 거래가는 층·향·동에 따라 차이가 있으며, 향후 가격을 보장하지 않음</p>
+  <p class="lead" style="font-size:15px;margin-top:20px"><b>참고</b> · 동탄역 역세권 단지 전용 84㎡는 최근 3개월 최고 12.8억(동탄역 푸르지오)~13.3억(동탄역 시범호반써밋)에 거래됐습니다. 입지·연식이 달라 직접 비교 대상은 아니며, 병점역 생활권의 시세 위치를 가늠하는 참고치입니다.</p>
+  <p class="src">출처: 국토부 실거래가(2026년 9월 기준 최근 3개월 최고가)</p>
 </section>
 
 <!-- 9. MERITS -->
@@ -347,7 +348,7 @@ var SCRIPTS = {
 var LABEL = {'30':'30대','40':'40대','50':'50대','60':'60대 이상'};
 var chosen = '';
 
-function setAge(a){
+function setAge(a, noScroll){
   chosen = a;
   document.querySelectorAll('#ages button').forEach(function(b){b.classList.toggle('on', b.dataset.age===a);});
   var chat = document.getElementById('chat');
@@ -360,10 +361,20 @@ function setAge(a){
   document.querySelectorAll('.merit').forEach(function(m){m.classList.toggle('on', m.dataset.age===a);});
   var r = document.querySelector('#segAge input[value^="'+LABEL[a].slice(0,2)+'"]'); if(r) r.checked = true;
   try{localStorage.setItem('osanxi_age',a);}catch(e){}
-  document.getElementById('s1').scrollIntoView({behavior:'smooth'});
+  if(!noScroll) document.getElementById('s1').scrollIntoView({behavior:'smooth'});
 }
 document.querySelectorAll('#ages button').forEach(function(b){b.addEventListener('click',function(){setAge(b.dataset.age);});});
-(function(){var a='30'; try{a=localStorage.getItem('osanxi_age')||'30';}catch(e){}
+
+// URL 파라미터: ?age=30|40|50|60 → 해당 세대 답변 미리 선택 (광고세트별 랜딩용)
+//               ?v=b → 전환 장면 순한 문구 (A/B 테스트용)
+var QS = new URLSearchParams(location.search);
+var VARIANT = QS.get('v')==='b' ? 'b' : 'a';
+if(VARIANT==='b') document.getElementById('turnEyebrow').textContent='조금 직설적이었죠?';
+(function(){
+  var q = QS.get('age');
+  if(SCRIPTS[q]){ setAge(q, true); return; }
+  var a='30'; try{a=localStorage.getItem('osanxi_age')||'30';}catch(e){}
+  if(!SCRIPTS[a]) a='30';
   chosen=''; var chat=document.getElementById('chat');
   chat.innerHTML = SCRIPTS[a].map(function(t){var me=t.indexOf('<span>')===0;return '<div class="bubble'+(me?' me':'')+'">'+t.replace(/<\/?span>/g,'')+'</div>';}).join('');
 })();
@@ -405,9 +416,11 @@ document.getElementById('form').addEventListener('submit',function(ev){
   if(!document.getElementById('ok').checked){alert('개인정보 수집·이용에 동의해 주세요.');return;}
   var ageEl=document.querySelector('#segAge input:checked');
   var data=new URLSearchParams({name:name,phone:phone,age:ageEl?ageEl.value:'',size:document.getElementById('sz').value,
-    source:'homepage',ref:document.referrer||'',utm:location.search||''});
-  var btn=document.getElementById('submit'); btn.disabled=true; btn.textContent='접수 중…';
-  if(!ENDPOINT){ setTimeout(finish,400); return; }
+    source:'homepage',ref:document.referrer||'',utm:location.search||'',variant:VARIANT});
+  var btn=document.getElementById('submit');
+  // 수신 주소가 없으면 접수된 것처럼 보이지 않게 하고 전화로 안내 (리드 유실 방지)
+  if(!ENDPOINT){ alert('현재 온라인 접수가 준비 중입니다. 1688-7038로 전화 주시면 바로 상담해 드립니다.'); location.href='tel:16887038'; return; }
+  btn.disabled=true; btn.textContent='접수 중…';
   fetch(ENDPOINT,{method:'POST',mode:'no-cors',body:data}).then(finish).catch(function(){
     btn.disabled=false; btn.textContent='무료 상담 신청하기'; alert('전송에 실패했습니다. 1688-7038로 전화 주세요.');});
   function finish(){document.getElementById('formBody').style.display='none';document.getElementById('done').style.display='block';
@@ -415,6 +428,19 @@ document.getElementById('form').addEventListener('submit',function(ev){
     if(window.fbq){try{fbq('track','Lead');}catch(e){}}}
 });
 </script>
-<!-- 네이버 프리미엄로그분석(wcs) / Meta 픽셀 스크립트는 계정 발급 후 이 위치에 추가 -->
+<script>
+// Meta 픽셀: 이벤트 관리자에서 발급받은 픽셀 ID를 넣으면 PageView·Lead가 자동 전송됨
+var META_PIXEL_ID = '';
+if(META_PIXEL_ID){
+  !function(f,b,e,v,n,t,s){if(f.fbq)return;n=f.fbq=function(){n.callMethod?
+  n.callMethod.apply(n,arguments):n.queue.push(arguments)};if(!f._fbq)f._fbq=n;
+  n.push=n;n.loaded=!0;n.version='2.0';n.queue=[];t=b.createElement(e);t.async=!0;
+  t.src=v;s=b.getElementsByTagName(e)[0];s.parentNode.insertBefore(t,s)}(window,
+  document,'script','https://connect.facebook.net/en_US/fbevents.js');
+  fbq('init', META_PIXEL_ID);
+  fbq('track', 'PageView');
+}
+</script>
+<!-- 네이버 프리미엄로그분석(wcs) 스크립트는 계정 발급 후 이 위치에 추가 -->
 </body>
 </html>
