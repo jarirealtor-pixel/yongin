@@ -412,7 +412,7 @@ var initial = NAME ? NAME.charAt(0) : '상';
 setTxt('av',initial); setTxt('av2',initial);
 if(NAME){
   setTxt('whoName',NAME); setTxt('agName',NAME);
-  setTxt('hookEye',NAME+josa(NAME,'이','가')+' 전하는 이야기'+(COMP?' · '+COMP:''));
+  setTxt('hookEye',NAME+(COMP?' · '+COMP:''));
 }
 if(COMP){ setTxt('whoSub',COMP+' · 오산헤리티지자이 분양 상담'); setTxt('agSub',COMP+' · 오산헤리티지자이 분양 상담'); }
 var IOS=/iPhone|iPad|iPod/.test(navigator.userAgent);
