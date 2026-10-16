@@ -50,9 +50,12 @@ ul.tips li:last-child{border:0}
   <div class="box">
     <h2><span class="step">1</span>내 정보 입력</h2>
     <label for="n">이름 또는 회사명</label>
-    <input id="n" maxlength="20" placeholder="예: 김민수 / 미래분양">
+    <input id="n" maxlength="30" placeholder="예: 김민수 / 미래분양">
     <label for="c">소속·직함 <small>(선택)</small></label>
-    <input id="c" maxlength="30" placeholder="예: 분양상담사 / ○○공인중개사사무소">
+    <input id="c" maxlength="40" placeholder="예: 분양상담사 / ○○공인중개사사무소">
+    <label for="i">첫 화면 맨 윗줄 소개 <small>(선택 · 최대 60자)</small></label>
+    <input id="i" maxlength="60" placeholder="예: 분양 상담 15년, 동탄·오산 현장 전문가가 묻습니다">
+    <p class="tip" style="margin-top:6px">비워 두면 이름·소속이 표시됩니다.</p>
     <label for="t">연락받을 번호</label>
     <input id="t" type="tel" inputmode="numeric" placeholder="010-0000-0000 또는 1588-0000">
     <div class="err" id="tErr">번호를 확인해 주세요. (휴대폰·지역번호·대표번호)</div>
@@ -116,7 +119,7 @@ function fmtTel(d){
 }
 function telOk(d){return /^01\d{8,9}$/.test(d)||/^(15|16|18)\d{6}$/.test(d)||/^0\d{8,10}$/.test(d);}
 function build(){
-  var n=$('n').value.trim(), c=$('c').value.trim(), t=$('t').value.replace(/\D/g,''), age=$('age').value;
+  var n=$('n').value.trim(), c=$('c').value.trim(), intro=$('i').value.trim(), t=$('t').value.replace(/\D/g,''), age=$('age').value;
   $('tErr').style.display = t && !telOk(t) ? 'block' : 'none';
   var mob=/^01\d{8,9}$/.test(t), sm=$('s').value.replace(/\D/g,'');
   $('smsWrap').style.display = t && !mob && telOk(t) ? 'block' : 'none';
@@ -124,7 +127,7 @@ function build(){
   var ok = n && telOk(t);
   ['copyUrl','preview','copyMsg','sendSms'].forEach(function(id){$(id).setAttribute('aria-disabled', ok?'false':'true');});
   if(!ok){ $('url').textContent='이름과 번호를 입력하면 여기에 링크가 생깁니다.'; return ''; }
-  var q=new URLSearchParams(); q.set('n',n); if(c) q.set('c',c); q.set('t',t); if(!mob && /^01\d{8,9}$/.test(sm)) q.set('s',sm); if(age) q.set('age',age);
+  var q=new URLSearchParams(); q.set('n',n); if(c) q.set('c',c); if(intro) q.set('i',intro); q.set('t',t); if(!mob && /^01\d{8,9}$/.test(sm)) q.set('s',sm); if(age) q.set('age',age);
   var url=BASE+'?'+q.toString();
   $('url').textContent=url; $('preview').href=url;
   if(!msgEdited){
@@ -133,7 +136,7 @@ function build(){
     $('msg').value=$('msg').value.replace(/https:\/\/jarirealtor-pixel\.github\.io\/yongin\/osanxi\/share\/\S*/,url);
   }
   $('sendSms').href='sms:'+(IOS?'&':'?')+'body='+encodeURIComponent($('msg').value);
-  try{localStorage.setItem('osanxi_maker',JSON.stringify({n:n,c:c,t:t,s:sm}));}catch(e){}
+  try{localStorage.setItem('osanxi_maker',JSON.stringify({n:n,c:c,i:intro,t:t,s:sm}));}catch(e){}
   return url;
 }
 function toast(t){var e=$('toast');e.textContent=t;e.classList.add('on');setTimeout(function(){e.classList.remove('on');},1600);}
@@ -143,11 +146,11 @@ function copy(text,done){
 }
 $('t').addEventListener('input',function(){var d=this.value.replace(/\D/g,'').slice(0,11);this.value=d.length<4?d:fmtTel(d)||d;build();});
 $('s').addEventListener('input',function(){var d=this.value.replace(/\D/g,'').slice(0,11);this.value=d.length<4?d:fmtTel(d)||d;build();});
-['n','c','age'].forEach(function(id){$(id).addEventListener('input',build);$(id).addEventListener('change',build);});
+['n','c','i','age'].forEach(function(id){$(id).addEventListener('input',build);$(id).addEventListener('change',build);});
 $('msg').addEventListener('input',function(){msgEdited=true;$('sendSms').href='sms:'+(IOS?'&':'?')+'body='+encodeURIComponent(this.value);});
 $('copyUrl').addEventListener('click',function(){var u=build();if(u)copy(u,'링크를 복사했습니다');});
 $('copyMsg').addEventListener('click',function(){build();copy($('msg').value,'문자 내용을 복사했습니다');});
-try{var s=JSON.parse(localStorage.getItem('osanxi_maker')||'null');if(s){$('n').value=s.n||'';$('c').value=s.c||'';$('t').value=fmtTel(s.t||'');$('s').value=fmtTel(s.s||'');}}catch(e){}
+try{var s=JSON.parse(localStorage.getItem('osanxi_maker')||'null');if(s){$('n').value=s.n||'';$('c').value=s.c||'';$('i').value=s.i||'';$('t').value=fmtTel(s.t||'');$('s').value=fmtTel(s.s||'');}}catch(e){}
 build();
 </script>
 </body>

@@ -24,7 +24,7 @@ body{font-family:'Noto Sans KR',system-ui,sans-serif;background:var(--ink);color
 .wrap{max-width:480px;margin:0 auto;position:relative}
 .scene{min-height:100svh;scroll-snap-align:start;padding:72px 22px 120px;display:flex;flex-direction:column;justify-content:center;position:relative;overflow:hidden}
 .scene.tall{justify-content:flex-start;padding-top:64px}
-.eyebrow{color:var(--gold);font-weight:700;font-size:14px;letter-spacing:.5px}
+.eyebrow{color:var(--gold);font-weight:700;font-size:14px;letter-spacing:.5px;line-height:1.5}
 h1,h2{font-weight:900;letter-spacing:-1px;line-height:1.22}
 h1{font-size:40px}
 h2{font-size:30px;margin-top:10px}
@@ -398,7 +398,7 @@ addEventListener('scroll',function(){
 },{passive:true});
 
 // ===== 담당자 정보: 링크의 ?n=이름&c=소속&t=번호 로 표시 =====
-var NAME=(QS.get('n')||'').trim().slice(0,20), COMP=(QS.get('c')||'').trim().slice(0,30), TEL=(QS.get('t')||'').replace(/\D/g,'').slice(0,12), SMS=(QS.get('s')||'').replace(/\D/g,'').slice(0,11);
+var NAME=(QS.get('n')||'').trim().slice(0,30), COMP=(QS.get('c')||'').trim().slice(0,40), INTRO=(QS.get('i')||'').trim().slice(0,60), TEL=(QS.get('t')||'').replace(/\D/g,'').slice(0,12), SMS=(QS.get('s')||'').replace(/\D/g,'').slice(0,11);
 if(!/^01\d{8,9}$/.test(SMS)) SMS=/^01\d{8,9}$/.test(TEL)?TEL:'';
 function fmtTel(d){
   if(/^(15|16|18)\d{6}$/.test(d)) return d.slice(0,4)+'-'+d.slice(4);
@@ -412,8 +412,9 @@ var initial = NAME ? NAME.charAt(0) : '상';
 setTxt('av',initial); setTxt('av2',initial);
 if(NAME){
   setTxt('whoName',NAME); setTxt('agName',NAME);
-  setTxt('hookEye',NAME+(COMP?' · '+COMP:''));
+  setTxt('hookEye',INTRO||(NAME+(COMP?' · '+COMP:'')));
 }
+if(INTRO&&!NAME) setTxt('hookEye',INTRO);
 if(COMP){ setTxt('whoSub',COMP+' · 오산헤리티지자이 분양 상담'); setTxt('agSub',COMP+' · 오산헤리티지자이 분양 상담'); }
 var IOS=/iPhone|iPad|iPod/.test(navigator.userAgent);
 if(TEL.length>=8){
