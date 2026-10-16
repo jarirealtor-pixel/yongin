@@ -308,7 +308,7 @@ footer a{color:var(--muted)}
   <span id="ftAgent">상담: 이 페이지를 보내 드린 담당자</span>
 </footer>
 
-<div class="cta-bar" id="ctaBar"><a href="#apply" id="ctaA">담당자에게 바로 물어보기</a></div>
+<div class="cta-bar" id="ctaBar"><a href="#apply" id="ctaA">궁금한 거 바로 물어보기</a></div>
 
 <script>
 var SCRIPTS = {
@@ -425,7 +425,6 @@ if(TEL.length>=8){
   document.getElementById('pick').hidden=true; document.getElementById('noPhone').hidden=false;
   document.getElementById('agTel').style.display='none';
 }
-if(NAME) setTxt('ctaA',NAME+'에게 바로 물어보기');
 // 선택 칩
 document.querySelectorAll('.chips').forEach(function(g){
   g.addEventListener('click',function(ev){var b=ev.target.closest('button'); if(!b) return;
