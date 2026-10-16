@@ -398,7 +398,8 @@ addEventListener('scroll',function(){
 },{passive:true});
 
 // ===== 담당자 정보: 링크의 ?n=이름&c=소속&t=번호 로 표시 =====
-var NAME=(QS.get('n')||'').trim().slice(0,20), COMP=(QS.get('c')||'').trim().slice(0,30), TEL=(QS.get('t')||'').replace(/\D/g,'').slice(0,12);
+var NAME=(QS.get('n')||'').trim().slice(0,20), COMP=(QS.get('c')||'').trim().slice(0,30), TEL=(QS.get('t')||'').replace(/\D/g,'').slice(0,12), SMS=(QS.get('s')||'').replace(/\D/g,'').slice(0,11);
+if(!/^01\d{8,9}$/.test(SMS)) SMS=/^01\d{8,9}$/.test(TEL)?TEL:'';
 function fmtTel(d){
   if(/^(15|16|18)\d{6}$/.test(d)) return d.slice(0,4)+'-'+d.slice(4);
   if(/^02\d{7,8}$/.test(d)) return '02-'+d.slice(2,d.length-4)+'-'+d.slice(-4);
@@ -420,7 +421,7 @@ if(TEL.length>=8){
   document.getElementById('btnCall').href='tel:'+TEL;
   document.getElementById('btnCall').textContent='📞 전화로 바로 물어보기 '+fmtTel(TEL);
   setTxt('ftAgent','상담: '+(NAME||'담당자')+(COMP?' ('+COMP+')':'')+' · '+fmtTel(TEL));
-  if(/^01\d/.test(TEL)===false) document.getElementById('btnSms').style.display='none'; // 대표번호(1588 등)는 문자 수신 불가
+  if(!SMS){ document.getElementById('btnSms').style.display='none'; document.querySelector('.hint').style.display='none'; } // 문자 받을 휴대폰이 없으면 숨김
 }else{
   document.getElementById('pick').hidden=true; document.getElementById('noPhone').hidden=false;
   document.getElementById('agTel').style.display='none';
@@ -437,7 +438,7 @@ document.getElementById('btnSms').addEventListener('click',function(ev){
   var asks=[].map.call(document.querySelectorAll('#cAsk .on'),function(b){return b.textContent;});
   var body='[오산헤리티지자이 문의]\n'+(chosen?'연령대: '+LABEL[chosen]+'\n':'')+(size?'관심 평형: '+size+'\n':'')+
     (asks.length?'궁금한 점: '+asks.join(', ')+'\n':'')+'상담 부탁드립니다.';
-  location.href='sms:'+TEL+(IOS?'&':'?')+'body='+encodeURIComponent(body);
+  location.href='sms:'+SMS+(IOS?'&':'?')+'body='+encodeURIComponent(body);
 });
 </script>
 </body>

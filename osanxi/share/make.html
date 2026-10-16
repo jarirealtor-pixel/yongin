@@ -56,7 +56,12 @@ ul.tips li:last-child{border:0}
     <label for="t">연락받을 번호</label>
     <input id="t" type="tel" inputmode="numeric" placeholder="010-0000-0000 또는 1588-0000">
     <div class="err" id="tErr">번호를 확인해 주세요. (휴대폰·지역번호·대표번호)</div>
-    <p class="tip">휴대폰 번호를 넣으면 고객이 <b>문자 버튼</b>으로 관심 평형·궁금한 점을 바로 보낼 수 있습니다. 1588 같은 대표번호는 문자를 받을 수 없어 전화 버튼만 나옵니다.</p>
+    <div id="smsWrap" style="display:none">
+      <label for="s">문자 받을 휴대폰 <small>(대표번호·사무실 번호는 문자를 못 받아요)</small></label>
+      <input id="s" type="tel" inputmode="numeric" placeholder="010-0000-0000">
+      <div class="err" id="sErr">휴대폰 번호(010…)를 넣어 주세요.</div>
+    </div>
+    <p class="tip">휴대폰 번호를 넣으면 고객이 <b>문자 버튼</b>으로 관심 평형·궁금한 점을 바로 보낼 수 있습니다. 대표번호나 사무실 번호를 넣으면 <b>문자 받을 휴대폰</b> 칸이 나타납니다. 비워 두면 전화 버튼만 나옵니다.</p>
   </div>
 
   <div class="box">
@@ -113,10 +118,13 @@ function telOk(d){return /^01\d{8,9}$/.test(d)||/^(15|16|18)\d{6}$/.test(d)||/^0
 function build(){
   var n=$('n').value.trim(), c=$('c').value.trim(), t=$('t').value.replace(/\D/g,''), age=$('age').value;
   $('tErr').style.display = t && !telOk(t) ? 'block' : 'none';
+  var mob=/^01\d{8,9}$/.test(t), sm=$('s').value.replace(/\D/g,'');
+  $('smsWrap').style.display = t && !mob && telOk(t) ? 'block' : 'none';
+  $('sErr').style.display = !mob && sm && !/^01\d{8,9}$/.test(sm) ? 'block' : 'none';
   var ok = n && telOk(t);
   ['copyUrl','preview','copyMsg','sendSms'].forEach(function(id){$(id).setAttribute('aria-disabled', ok?'false':'true');});
   if(!ok){ $('url').textContent='이름과 번호를 입력하면 여기에 링크가 생깁니다.'; return ''; }
-  var q=new URLSearchParams(); q.set('n',n); if(c) q.set('c',c); q.set('t',t); if(age) q.set('age',age);
+  var q=new URLSearchParams(); q.set('n',n); if(c) q.set('c',c); q.set('t',t); if(!mob && /^01\d{8,9}$/.test(sm)) q.set('s',sm); if(age) q.set('age',age);
   var url=BASE+'?'+q.toString();
   $('url').textContent=url; $('preview').href=url;
   if(!msgEdited){
@@ -125,7 +133,7 @@ function build(){
     $('msg').value=$('msg').value.replace(/https:\/\/jarirealtor-pixel\.github\.io\/yongin\/osanxi\/share\/\S*/,url);
   }
   $('sendSms').href='sms:'+(IOS?'&':'?')+'body='+encodeURIComponent($('msg').value);
-  try{localStorage.setItem('osanxi_maker',JSON.stringify({n:n,c:c,t:t}));}catch(e){}
+  try{localStorage.setItem('osanxi_maker',JSON.stringify({n:n,c:c,t:t,s:sm}));}catch(e){}
   return url;
 }
 function toast(t){var e=$('toast');e.textContent=t;e.classList.add('on');setTimeout(function(){e.classList.remove('on');},1600);}
@@ -134,11 +142,12 @@ function copy(text,done){
   function fallback(){var ta=document.createElement('textarea');ta.value=text;document.body.appendChild(ta);ta.select();try{document.execCommand('copy');toast(done);}catch(e){toast('길게 눌러 직접 복사해 주세요');}ta.remove();}
 }
 $('t').addEventListener('input',function(){var d=this.value.replace(/\D/g,'').slice(0,11);this.value=d.length<4?d:fmtTel(d)||d;build();});
+$('s').addEventListener('input',function(){var d=this.value.replace(/\D/g,'').slice(0,11);this.value=d.length<4?d:fmtTel(d)||d;build();});
 ['n','c','age'].forEach(function(id){$(id).addEventListener('input',build);$(id).addEventListener('change',build);});
 $('msg').addEventListener('input',function(){msgEdited=true;$('sendSms').href='sms:'+(IOS?'&':'?')+'body='+encodeURIComponent(this.value);});
 $('copyUrl').addEventListener('click',function(){var u=build();if(u)copy(u,'링크를 복사했습니다');});
 $('copyMsg').addEventListener('click',function(){build();copy($('msg').value,'문자 내용을 복사했습니다');});
-try{var s=JSON.parse(localStorage.getItem('osanxi_maker')||'null');if(s){$('n').value=s.n||'';$('c').value=s.c||'';$('t').value=fmtTel(s.t||'');}}catch(e){}
+try{var s=JSON.parse(localStorage.getItem('osanxi_maker')||'null');if(s){$('n').value=s.n||'';$('c').value=s.c||'';$('t').value=fmtTel(s.t||'');$('s').value=fmtTel(s.s||'');}}catch(e){}
 build();
 </script>
 </body>
