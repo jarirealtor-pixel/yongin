@@ -1,0 +1,145 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>내 상담 링크 만들기 | 오산헤리티지자이</title>
+<meta name="robots" content="noindex">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700;900&display=swap" rel="stylesheet">
+<style>
+:root{--ink:#0a1a2f;--navy:#0b2440;--navy2:#12345a;--gold:#e3bf6a;--paper:#f6f3ea;--muted:#5b6b80;--line:#e2dccb}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Noto Sans KR',system-ui,sans-serif;background:var(--ink);color:var(--ink);word-break:keep-all;-webkit-font-smoothing:antialiased}
+.wrap{max-width:480px;margin:0 auto;padding:28px 16px 60px}
+.top{color:#fff}
+.top .ey{color:var(--gold);font-weight:700;font-size:13px}
+.top h1{font-size:28px;font-weight:900;letter-spacing:-1px;margin-top:8px;line-height:1.25}
+.top p{color:#c9d4e3;font-size:15px;line-height:1.6;margin-top:10px}
+.box{background:var(--paper);border-radius:20px;padding:22px 18px;margin-top:18px}
+.box h2{font-size:17px;font-weight:900;margin-bottom:4px}
+.step{display:inline-block;background:var(--navy);color:#fff;border-radius:20px;font-size:12px;padding:2px 9px;margin-right:6px;vertical-align:2px}
+label{display:block;font-size:14px;font-weight:700;margin:14px 0 6px}
+label small{font-weight:500;color:var(--muted)}
+input,select,textarea{width:100%;font:inherit;font-size:17px;padding:13px;border:1.5px solid #d6cfbd;border-radius:12px;background:#fff;color:var(--ink)}
+textarea{font-size:15px;line-height:1.55;resize:vertical}
+.out{font-size:13px;word-break:break-all;background:#fff;border:1.5px dashed #c9bf9f;border-radius:12px;padding:12px;margin-top:10px;color:var(--navy2)}
+.btns{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:12px}
+.btn{display:block;text-align:center;text-decoration:none;font:inherit;font-weight:900;font-size:16px;border:0;border-radius:12px;padding:14px 6px;cursor:pointer}
+.btn.p{background:var(--navy);color:#fff}.btn.g{background:var(--gold);color:var(--ink)}.btn.w{background:#fff;color:var(--navy);border:1.5px solid var(--navy)}
+.btn.full{grid-column:1/-1}
+.btn[aria-disabled=true]{opacity:.4;pointer-events:none}
+.tip{font-size:13px;color:var(--muted);line-height:1.6;margin-top:10px}
+.tip b{color:var(--ink)}
+ul.tips{list-style:none;margin-top:6px}
+ul.tips li{font-size:14px;line-height:1.6;padding:9px 0;border-bottom:1px solid var(--line)}
+ul.tips li:last-child{border:0}
+.toast{position:fixed;left:50%;bottom:30px;transform:translateX(-50%);background:#111;color:#fff;font-size:14px;padding:10px 16px;border-radius:20px;opacity:0;transition:.2s;pointer-events:none}
+.toast.on{opacity:1}
+.err{color:#c0392b;font-size:13px;margin-top:6px;display:none}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="top">
+    <div class="ey">오산헤리티지자이 · 상담사 전용</div>
+    <h1>내 이름이 들어간<br>상담 링크 만들기</h1>
+    <p>이름과 번호만 넣으면 <b style="color:#fff">나만의 링크</b>가 만들어집니다. 고객에게 문자로 보내면, 페이지 마지막에 내 이름과 전화·문자 버튼이 나옵니다.</p>
+  </div>
+
+  <div class="box">
+    <h2><span class="step">1</span>내 정보 입력</h2>
+    <label for="n">이름 또는 회사명</label>
+    <input id="n" maxlength="20" placeholder="예: 김민수 / 미래분양">
+    <label for="c">소속·직함 <small>(선택)</small></label>
+    <input id="c" maxlength="30" placeholder="예: 분양상담사 / ○○공인중개사사무소">
+    <label for="t">연락받을 번호</label>
+    <input id="t" type="tel" inputmode="numeric" placeholder="010-0000-0000 또는 1588-0000">
+    <div class="err" id="tErr">번호를 확인해 주세요. (휴대폰·지역번호·대표번호)</div>
+    <p class="tip">휴대폰 번호를 넣으면 고객이 <b>문자 버튼</b>으로 관심 평형·궁금한 점을 바로 보낼 수 있습니다. 1588 같은 대표번호는 문자를 받을 수 없어 전화 버튼만 나옵니다.</p>
+  </div>
+
+  <div class="box">
+    <h2><span class="step">2</span>고객 연령대 <small style="font-weight:500;color:var(--muted)">(선택)</small></h2>
+    <p class="tip" style="margin-top:4px">고객 나이대를 알면 고르세요. 링크를 열자마자 <b>그 세대 이야기</b>부터 보여줍니다.</p>
+    <select id="age" style="margin-top:10px">
+      <option value="">고객이 직접 고르게 하기</option>
+      <option value="30">30대</option><option value="40">40대</option><option value="50">50대</option><option value="60">60대 이상</option>
+    </select>
+  </div>
+
+  <div class="box">
+    <h2><span class="step">3</span>내 링크</h2>
+    <div class="out" id="url">이름과 번호를 입력하면 여기에 링크가 생깁니다.</div>
+    <div class="btns">
+      <button class="btn p" id="copyUrl" aria-disabled="true">링크 복사</button>
+      <a class="btn w" id="preview" target="_blank" rel="noopener" aria-disabled="true">미리보기</a>
+    </div>
+
+    <label for="msg" style="margin-top:20px">고객에게 보낼 문자 <small>(자유롭게 고치세요)</small></label>
+    <textarea id="msg" rows="7"></textarea>
+    <div class="btns">
+      <button class="btn g" id="copyMsg" aria-disabled="true">문자 내용 복사</button>
+      <a class="btn p" id="sendSms" aria-disabled="true">문자 앱으로 열기</a>
+    </div>
+    <p class="tip">‘문자 앱으로 열기’는 휴대폰에서 누르면 내용이 채워진 문자 창이 열립니다. 받는 사람만 고르면 됩니다. 카카오톡은 ‘문자 내용 복사’ 후 붙여넣기 하세요.</p>
+  </div>
+
+  <div class="box">
+    <h2>잘 쓰는 법</h2>
+    <ul class="tips">
+      <li><b>보내는 시간</b> · 퇴근 후 저녁 7~9시, 주말 오전에 보내면 열어보는 비율이 높습니다.</li>
+      <li><b>보낸 뒤 1~2일</b> · "보내드린 페이지 보셨어요? 몇 년생 이야기가 와닿으셨는지 궁금합니다"처럼 가볍게 다시 연락하세요.</li>
+      <li><b>세대별 링크</b> · 상담 중 나이를 알게 되면 2번에서 세대를 골라 새 링크를 보내세요.</li>
+      <li><b>개인정보</b> · 이 링크는 고객 정보를 어디에도 저장하지 않습니다. 고객이 직접 전화나 문자로 연락합니다.</li>
+      <li><b>주의</b> · 페이지 내용은 공개 통계·분양 자료 기반 해설입니다. 고객에게 수익이나 가격 상승을 보장하는 표현은 하지 마세요.</li>
+    </ul>
+  </div>
+</div>
+<div class="toast" id="toast"></div>
+
+<script>
+var BASE='https://jarirealtor-pixel.github.io/yongin/osanxi/share/';
+var $=function(id){return document.getElementById(id);};
+var IOS=/iPhone|iPad|iPod/.test(navigator.userAgent);
+var msgEdited=false;
+function fmtTel(d){
+  if(/^(15|16|18)\d{6}$/.test(d)) return d.slice(0,4)+'-'+d.slice(4);
+  if(/^02\d{7,8}$/.test(d)) return '02-'+d.slice(2,d.length-4)+'-'+d.slice(-4);
+  if(d.length>=10) return d.slice(0,3)+'-'+d.slice(3,d.length-4)+'-'+d.slice(-4);
+  return d;
+}
+function telOk(d){return /^01\d{8,9}$/.test(d)||/^(15|16|18)\d{6}$/.test(d)||/^0\d{8,10}$/.test(d);}
+function build(){
+  var n=$('n').value.trim(), c=$('c').value.trim(), t=$('t').value.replace(/\D/g,''), age=$('age').value;
+  $('tErr').style.display = t && !telOk(t) ? 'block' : 'none';
+  var ok = n && telOk(t);
+  ['copyUrl','preview','copyMsg','sendSms'].forEach(function(id){$(id).setAttribute('aria-disabled', ok?'false':'true');});
+  if(!ok){ $('url').textContent='이름과 번호를 입력하면 여기에 링크가 생깁니다.'; return ''; }
+  var q=new URLSearchParams(); q.set('n',n); if(c) q.set('c',c); q.set('t',t); if(age) q.set('age',age);
+  var url=BASE+'?'+q.toString();
+  $('url').textContent=url; $('preview').href=url;
+  if(!msgEdited){
+    $('msg').value='안녕하세요, '+n+(c?'('+c+')':'')+'입니다.\n\n"집값, 기다리면 내려갈까요?"\n지금 집을 고민 중이시라면 1분만 넘겨보세요. 세대별로 숫자로 정리해 봤습니다.\n\n'+url+'\n\n궁금한 점은 '+fmtTel(t)+'로 편하게 연락 주세요.';
+  }else{
+    $('msg').value=$('msg').value.replace(/https:\/\/jarirealtor-pixel\.github\.io\/yongin\/osanxi\/share\/\S*/,url);
+  }
+  $('sendSms').href='sms:'+(IOS?'&':'?')+'body='+encodeURIComponent($('msg').value);
+  try{localStorage.setItem('osanxi_maker',JSON.stringify({n:n,c:c,t:t}));}catch(e){}
+  return url;
+}
+function toast(t){var e=$('toast');e.textContent=t;e.classList.add('on');setTimeout(function(){e.classList.remove('on');},1600);}
+function copy(text,done){
+  if(navigator.clipboard&&window.isSecureContext){navigator.clipboard.writeText(text).then(function(){toast(done);},fallback);}else fallback();
+  function fallback(){var ta=document.createElement('textarea');ta.value=text;document.body.appendChild(ta);ta.select();try{document.execCommand('copy');toast(done);}catch(e){toast('길게 눌러 직접 복사해 주세요');}ta.remove();}
+}
+$('t').addEventListener('input',function(){var d=this.value.replace(/\D/g,'').slice(0,11);this.value=d.length<4?d:fmtTel(d)||d;build();});
+['n','c','age'].forEach(function(id){$(id).addEventListener('input',build);$(id).addEventListener('change',build);});
+$('msg').addEventListener('input',function(){msgEdited=true;$('sendSms').href='sms:'+(IOS?'&':'?')+'body='+encodeURIComponent(this.value);});
+$('copyUrl').addEventListener('click',function(){var u=build();if(u)copy(u,'링크를 복사했습니다');});
+$('copyMsg').addEventListener('click',function(){build();copy($('msg').value,'문자 내용을 복사했습니다');});
+try{var s=JSON.parse(localStorage.getItem('osanxi_maker')||'null');if(s){$('n').value=s.n||'';$('c').value=s.c||'';$('t').value=fmtTel(s.t||'');}}catch(e){}
+build();
+</script>
+</body>
+</html>

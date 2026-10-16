@@ -1,0 +1,445 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>집값, 기다리면 내려갈까요? | 오산헤리티지자이 분양 상담</title>
+<meta name="description" content="공급 절벽, 규제의 역설, 오르는 분양가. 지금 집을 봐야 하는 이유와 오산헤리티지자이 분양 상담.">
+<meta property="og:title" content="집값, 기다리면 내려갈까요?">
+<meta property="og:description" content="청약통장 없이 계약하는 병점역 생활권 신축. 공급·규제·분양가를 숫자로 확인해 보세요.">
+<meta property="og:image" content="https://jarirealtor-pixel.github.io/yongin/osanxi/img/hero.jpg">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://jarirealtor-pixel.github.io/yongin/osanxi/share/">
+<meta name="robots" content="noindex">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700;900&display=swap" rel="stylesheet">
+<style>
+:root{
+  --ink:#0a1a2f; --navy:#0b2440; --navy2:#12345a; --gold:#e3bf6a; --gold2:#f4d995;
+  --red:#ff5a4e; --paper:#f6f3ea; --muted:#9fb0c6; --line:rgba(255,255,255,.14);
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-snap-type:y proximity;scroll-behavior:smooth}
+body{font-family:'Noto Sans KR',system-ui,sans-serif;background:var(--ink);color:#fff;word-break:keep-all;overflow-x:hidden;-webkit-font-smoothing:antialiased}
+.wrap{max-width:480px;margin:0 auto;position:relative}
+.scene{min-height:100svh;scroll-snap-align:start;padding:72px 22px 120px;display:flex;flex-direction:column;justify-content:center;position:relative;overflow:hidden}
+.scene.tall{justify-content:flex-start;padding-top:64px}
+.eyebrow{color:var(--gold);font-weight:700;font-size:14px;letter-spacing:.5px}
+h1,h2{font-weight:900;letter-spacing:-1px;line-height:1.22}
+h1{font-size:40px}
+h2{font-size:30px;margin-top:10px}
+.lead{font-size:17px;line-height:1.65;color:#dbe4f0;margin-top:16px}
+.gold{color:var(--gold)} .red{color:var(--red)}
+.src{font-size:11.5px;color:var(--muted);margin-top:14px;line-height:1.5}
+
+/* progress + top bar */
+.topbar{position:fixed;top:0;left:0;right:0;z-index:50;height:52px;display:flex;align-items:center;justify-content:center;background:linear-gradient(180deg,rgba(10,26,47,.95),rgba(10,26,47,0))}
+.topbar .in{width:100%;max-width:480px;padding:0 18px;display:flex;align-items:center;gap:10px}
+.prog{flex:1;height:4px;border-radius:4px;background:rgba(255,255,255,.15);overflow:hidden}
+.prog i{display:block;height:100%;width:0;background:var(--gold);transition:width .2s}
+.chip{font-size:12px;color:var(--ink);background:var(--gold);border-radius:20px;padding:3px 10px;font-weight:700;white-space:nowrap}
+
+/* sticky CTA */
+.cta-bar{position:fixed;left:0;right:0;bottom:0;z-index:60;padding:10px 16px calc(10px + env(safe-area-inset-bottom));background:linear-gradient(0deg,rgba(10,26,47,1) 55%,rgba(10,26,47,0));display:flex;justify-content:center}
+.cta-bar a{width:100%;max-width:448px;display:block;text-align:center;background:var(--gold);color:var(--ink);font-weight:900;font-size:18px;border-radius:14px;padding:16px;text-decoration:none;box-shadow:0 8px 24px rgba(227,191,106,.25)}
+.cta-bar.hide{opacity:0;pointer-events:none;transition:opacity .2s}
+
+/* hook */
+.hook{background:radial-gradient(120% 70% at 50% 0%,#1b3d66 0%,var(--ink) 70%)}
+.hook h1 .strike{position:relative;color:#fff}
+.hook h1 .strike:after{content:"";position:absolute;left:-2%;right:-2%;top:54%;height:6px;background:var(--red);transform:rotate(-4deg);border-radius:3px}
+.ages{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:28px}
+.ages button{font:inherit;font-weight:900;font-size:20px;color:#fff;background:rgba(255,255,255,.06);border:1.5px solid var(--line);border-radius:16px;padding:20px 8px;cursor:pointer;transition:.15s}
+.ages button small{display:block;font-weight:500;font-size:12.5px;color:var(--muted);margin-top:4px}
+.ages button:active,.ages button.on{background:var(--gold);color:var(--ink);border-color:var(--gold)}
+.ages button.on small{color:var(--navy)}
+.swipe{margin-top:26px;text-align:center;color:var(--muted);font-size:13px;animation:bob 1.6s infinite}
+@keyframes bob{50%{transform:translateY(6px)}}
+
+/* chat */
+.who{display:flex;align-items:center;gap:10px;margin-bottom:18px}
+.av{width:46px;height:46px;border-radius:50%;background:linear-gradient(135deg,var(--gold),#b8902f);color:var(--ink);font-weight:900;display:grid;place-items:center;font-size:20px;flex:none}
+.who b{font-size:15px} .who span{display:block;font-size:12px;color:var(--muted)}
+.bubble{background:#fff;color:var(--ink);border-radius:4px 20px 20px 20px;padding:16px 18px;font-size:19px;line-height:1.55;font-weight:500;margin-bottom:12px;max-width:94%;opacity:0;transform:translateY(14px);transition:.45s}
+.bubble.me{background:var(--navy2);color:#fff;margin-left:auto;border-radius:20px 4px 20px 20px;font-size:16px}
+.bubble b{font-weight:900}
+.bubble em{font-style:normal;background:linear-gradient(transparent 58%,rgba(227,191,106,.6) 0)}
+.show .bubble{opacity:1;transform:none}
+.show .bubble:nth-child(2){transition-delay:.25s}.show .bubble:nth-child(3){transition-delay:.7s}.show .bubble:nth-child(4){transition-delay:1.15s}.show .bubble:nth-child(5){transition-delay:1.6s}
+.scene.chat{background:linear-gradient(180deg,#0e2848,var(--ink))}
+
+/* stat bars */
+.bars{margin-top:24px;display:flex;flex-direction:column;gap:14px}
+.bar .lab{display:flex;justify-content:space-between;font-size:14px;color:#dbe4f0;margin-bottom:6px}
+.bar .lab b{font-size:20px;color:#fff}
+.bar .track{height:30px;border-radius:8px;background:rgba(255,255,255,.07);overflow:hidden}
+.bar .fill{height:100%;width:0;border-radius:8px;background:var(--muted);transition:width 1.1s cubic-bezier(.2,.8,.2,1)}
+.bar.hl .fill{background:var(--red)} .bar.gd .fill{background:var(--gold)}
+.big{font-size:64px;font-weight:900;letter-spacing:-2px;line-height:1;margin-top:18px}
+.big small{font-size:22px;letter-spacing:0}
+
+/* compare table */
+.cmp{width:100%;border-collapse:separate;border-spacing:0;margin-top:22px;font-size:15px;border-radius:14px;overflow:hidden}
+.cmp th,.cmp td{padding:12px 10px;text-align:center;border-bottom:1px solid var(--line)}
+.cmp th{background:var(--navy2);font-size:13px;color:var(--muted);font-weight:700}
+.cmp td:first-child{text-align:left;color:#dbe4f0}
+.cmp .us{background:rgba(227,191,106,.12);color:var(--gold);font-weight:900}
+.cmp .them{color:#ff9b93}
+
+/* checklist reveal */
+.checks{list-style:none;margin-top:22px}
+.checks li{display:flex;align-items:center;gap:12px;font-size:19px;font-weight:700;padding:12px 0;border-bottom:1px solid var(--line);opacity:.25;transition:.4s}
+.checks li i{width:28px;height:28px;border-radius:50%;border:2px solid var(--muted);display:grid;place-items:center;font-style:normal;font-size:16px;flex:none;transition:.3s}
+.checks li.on{opacity:1}.checks li.on i{background:var(--gold);border-color:var(--gold);color:var(--ink)}
+.reveal{margin-top:26px;text-align:center;opacity:0;transform:scale(.9);transition:.6s}
+.reveal.on{opacity:1;transform:none}
+.reveal .nm{font-size:40px;font-weight:900;color:var(--gold);letter-spacing:-1px}
+.reveal .sub{color:#dbe4f0;font-size:15px;margin-top:4px}
+
+/* product */
+.photo{margin:-64px -22px 0;height:46svh;min-height:300px;background-size:cover;background-position:center;position:relative}
+.photo:after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,rgba(10,26,47,.15) 40%,var(--ink) 100%)}
+.photo .cg{position:absolute;right:10px;bottom:10px;z-index:2;font-size:10.5px;color:rgba(255,255,255,.7)}
+.facts{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:20px}
+.fact{background:rgba(255,255,255,.06);border:1px solid var(--line);border-radius:14px;padding:14px}
+.fact b{display:block;font-size:22px;font-weight:900;color:var(--gold)}
+.fact span{font-size:13px;color:#dbe4f0}
+.list{margin-top:18px;list-style:none}
+.list li{padding:12px 0;border-bottom:1px solid var(--line);font-size:16px;line-height:1.5}
+.list li b{color:var(--gold);margin-right:6px}
+.tag{display:inline-block;font-size:11px;color:var(--muted);border:1px solid var(--line);border-radius:6px;padding:0 5px;margin-left:4px;vertical-align:2px}
+
+/* persona merits */
+.merits{display:flex;flex-direction:column;gap:10px;margin-top:20px}
+.merit{border:1.5px solid var(--line);border-radius:16px;padding:16px;background:rgba(255,255,255,.04);transition:.3s}
+.merit h3{font-size:17px;font-weight:900}
+.merit p{font-size:15px;color:#dbe4f0;margin-top:6px;line-height:1.55}
+.merit.on{border-color:var(--gold);background:rgba(227,191,106,.1)}
+.merit.on h3{color:var(--gold)}
+
+/* contact card */
+.card{background:var(--paper);color:var(--ink);border-radius:22px;padding:22px 18px;margin-top:20px}
+.agent{display:flex;gap:14px;align-items:center;padding-bottom:16px;border-bottom:1px solid #e2dccb}
+.av.big{width:60px;height:60px;font-size:26px}
+.agent b{display:block;font-size:22px;font-weight:900}
+.agent span{display:block;font-size:13px;color:#5b6b80;margin-top:2px}
+.agent .num{display:inline-block;margin-top:6px;font-size:18px;font-weight:900;color:var(--navy2);text-decoration:none;letter-spacing:.3px}
+.q{font-size:14px;font-weight:900;margin:18px 0 8px}.q small{font-weight:500;color:#5b6b80}
+.chips{display:flex;flex-wrap:wrap;gap:6px}
+.chips button{font:inherit;font-size:14px;font-weight:700;padding:9px 12px;border-radius:20px;border:1.5px solid #d6cfbd;background:#fff;color:var(--ink);cursor:pointer}
+.chips button.on{background:var(--navy);border-color:var(--navy);color:#fff}
+.btn{display:block;text-align:center;text-decoration:none;font-weight:900;font-size:18px;border-radius:14px;padding:16px;margin-top:12px}
+.btn.call{background:var(--navy);color:#fff;margin-top:22px}
+.btn.sms{background:var(--gold);color:var(--ink)}
+.hint{font-size:12.5px;color:#5b6b80;margin-top:10px;line-height:1.5;text-align:center}
+.nophone{font-size:16px;font-weight:700;text-align:center;padding:18px 0 6px}
+.disclaim{font-size:11.5px;color:var(--muted);line-height:1.6;margin-top:18px}
+footer{padding:28px 22px 130px;font-size:12px;color:var(--muted);line-height:1.7;border-top:1px solid var(--line)}
+footer a{color:var(--muted)}
+</style>
+</head>
+<body>
+<div class="topbar"><div class="in"><div class="prog"><i id="prog"></i></div><span class="chip" id="ageChip" hidden></span></div></div>
+
+<main class="wrap">
+
+<!-- 0. HOOK -->
+<section class="scene hook" id="s0">
+  <div class="eyebrow" id="hookEye">집을 고민 중인 당신께 묻습니다</div>
+  <h1 style="margin-top:14px">집값,<br>기다리면<br><span class="strike">내려갈까요?</span></h1>
+  <p class="lead">당신이 망설이는 지금,<br>같은 나이 누군가는 <b class="gold">계약서에 도장</b>을 찍고 있습니다.</p>
+  <p class="lead" style="margin-top:22px;font-weight:700;color:#fff">당신은 몇 년생이세요?</p>
+  <div class="ages" id="ages">
+    <button data-age="30">30대<small>1987~1996년생</small></button>
+    <button data-age="40">40대<small>1977~1986년생</small></button>
+    <button data-age="50">50대<small>1967~1976년생</small></button>
+    <button data-age="60">60대 이상<small>~1966년생</small></button>
+  </div>
+  <div class="swipe">세대를 고르거나, 위로 넘겨보세요 ↑</div>
+</section>
+
+<!-- 1. AGE CHAT (filled by script) -->
+<section class="scene chat" id="s1">
+  <div class="who"><div class="av" id="av">상</div><div><b id="whoName">분양 상담사</b><span id="whoSub">오산헤리티지자이 분양 상담</span></div></div>
+  <div id="chat"></div>
+</section>
+
+<!-- 2. TURN -->
+<section class="scene" id="s2" style="background:var(--navy)">
+  <div class="eyebrow" id="turnEyebrow">기분 나쁘셨나요?</div>
+  <h2>그런데요,<br>세대는 달라도<br><span class="gold">결론은 하나</span>입니다.</h2>
+  <p class="lead">"좀 더 지켜보자"는 말이 왜 위험한지,<br>감정이 아니라 <b>숫자 세 개</b>로 보여드릴게요.</p>
+  <div class="swipe">↑ 첫 번째 숫자</div>
+</section>
+
+<!-- 3. SUPPLY -->
+<section class="scene" id="s3">
+  <div class="eyebrow">숫자 ① 공급 절벽</div>
+  <h2>집을 짓겠다는 허가가<br><span class="red">반토막</span> 났습니다.</h2>
+  <div class="bars">
+    <div class="bar"><div class="lab"><span>2022년 1~7월 전국 주택 인허가</span><b>29.4만</b></div><div class="track"><div class="fill" data-w="100"></div></div></div>
+    <div class="bar hl"><div class="lab"><span>2026년 1~7월 전국 주택 인허가</span><b>14.2만</b></div><div class="track"><div class="fill" data-w="48"></div></div></div>
+  </div>
+  <p class="lead">같은 기간 기준 <b>2010년 이후 최저</b>입니다.<br>오늘 허가가 줄면, <b class="gold">3~4년 뒤 새 아파트가 줄어듭니다.</b><br>수도권 준공도 올해 1~8월 <b class="red">21.6% 감소</b>했습니다.</p>
+  <p class="src">출처: 국토교통부 주택통계(2026년 7월·8월), 더퍼블릭(2026.9.27), 경기남부뉴스 보도 인용</p>
+</section>
+
+<!-- 4. REGULATION PARADOX -->
+<section class="scene" id="s4" style="background:linear-gradient(180deg,var(--ink),#10294a)">
+  <div class="eyebrow">숫자 ② 규제의 역설</div>
+  <h2>규제가 묶은 건<br>집값이 아니라<br><span class="gold">당신의 선택지</span>였습니다.</h2>
+  <p class="lead">6.30 대책으로 화성 동탄·용인 기흥까지 규제지역이 됐습니다. 수요는 사라지지 않고, <b>바로 옆 비규제지역</b>으로 옮겨갑니다. 게다가 이곳은 <b class="gold">청약 없이 바로 계약</b>할 수 있습니다.</p>
+  <table class="cmp">
+    <tr><th></th><th>오산헤리티지자이<br>(비규제)</th><th>규제지역<br>신규 분양<br>(일반적 기준)</th></tr>
+    <tr><td>계약 자격</td><td class="us">누구나</td><td class="them">청약 당첨자만</td></tr>
+    <tr><td>청약통장·가점</td><td class="us">필요 없음</td><td class="them">필요</td></tr>
+    <tr><td>실거주 의무</td><td class="us">없음</td><td class="them">2년</td></tr>
+    <tr><td>전매제한</td><td class="us">6개월</td><td class="them">3년</td></tr>
+  </table>
+  <p class="src">규제지역 항목은 일반적인 경우의 예시이며, 실거주 의무·전매제한 기간은 단지별(분양가상한제 적용 여부 등)로 다를 수 있음. 오산헤리티지자이 조건은 입주자모집공고 기준.</p>
+</section>
+
+<!-- 5. PRICE -->
+<section class="scene" id="s5">
+  <div class="eyebrow">숫자 ③ 분양가는 내려오지 않는다</div>
+  <h2>3년 전 분양가로<br>돌아갈 수 있을까요?</h2>
+  <div class="bars">
+    <div class="bar hl"><div class="lab"><span>서울 민간아파트 분양가 (3.3㎡, 3년)</span><b>+104%</b></div><div class="track"><div class="fill" data-w="100"></div></div></div>
+    <div class="bar gd"><div class="lab"><span>경기 민간아파트 분양가 (3.3㎡, 3년)</span><b>+31%</b></div><div class="track"><div class="fill" data-w="30"></div></div></div>
+  </div>
+  <p class="lead">공사비지수는 <b>4년 만에 최대 폭</b>으로 올랐습니다. 땅값·자재비·인건비가 오르는 한, 다음 분양은 더 비쌉니다.</p>
+  <div class="big gold">오늘이<br><small>가장 싼 분양가일지 모릅니다.</small></div>
+  <p class="src">출처: HUG 민간아파트 분양시장 동향('23.05→'26.05), 한국건설기술연구원 건설공사비지수(2026.4)</p>
+</section>
+
+<!-- 6. CHECKLIST REVEAL -->
+<section class="scene" id="s6" style="background:var(--navy)">
+  <div class="eyebrow">그렇다면, 어디를 봐야 할까요?</div>
+  <h2>이 다섯 가지를<br>모두 갖춘 곳</h2>
+  <ul class="checks" id="checks">
+    <li><i>✓</i>2029년 입주 <b class="gold">신축</b></li>
+    <li><i>✓</i>청약 없이 계약하는 <b class="gold">비규제지역</b></li>
+    <li><i>✓</i><b class="gold">1,783세대</b> 대단지</li>
+    <li><i>✓</i><b class="gold">병점역 생활권</b> 교통 호재</li>
+    <li><i>✓</i>주변 시세보다 <b class="gold">낮은 분양가</b></li>
+  </ul>
+  <div class="reveal" id="reveal">
+    <div class="nm">오산헤리티지자이</div>
+    <div class="sub">GS건설 자이 · 경기도 오산시 양산동</div>
+  </div>
+</section>
+
+<!-- 7. PRODUCT -->
+<section class="scene tall" id="s7">
+  <div class="photo" style="background-image:url('../img/hero.jpg')"><span class="cg">※ CG로 실제와 다를 수 있음</span></div>
+  <div class="eyebrow" style="margin-top:6px">오산헤리티지자이</div>
+  <h2>병점역 생활권<br>新주거타운</h2>
+  <div class="facts">
+    <div class="fact"><b>1,783</b><span>세대 · 22개동 대단지</span></div>
+    <div class="fact"><b>27층</b><span>최고층 · 지하 2층</span></div>
+    <div class="fact"><b>88%</b><span>전용 85㎡ 이하 중소형</span></div>
+    <div class="fact"><b>2029.09</b><span>입주 예정</span></div>
+  </div>
+  <ul class="list">
+    <li><b>평형</b>전용 75 · 84 · 102 · 124㎡, 펜트하우스&nbsp;166㎡</li>
+    <li><b>교통</b>GTX-C 병점역 연장, 1호선 서동탄~동탄역 연장(2029), 동탄 트램<span class="tag">계획</span></li>
+    <li><b>학교</b>양산1초<span class="tag">계획</span> · 양산중(2027년 9월 개교 예정) 도보 통학</li>
+    <li><b>직주근접</b>삼성전자 화성·기흥캠퍼스 생활권</li>
+  </ul>
+</section>
+
+<!-- 8. PRICE COMPARE -->
+<section class="scene" id="s8">
+  <div class="eyebrow">전용 84㎡ 기준</div>
+  <h2>신축인데,<br>인근 준신축 실거래보다 <span class="gold">낮습니다.</span></h2>
+  <div class="bars">
+    <div class="bar gd"><div class="lab"><span>오산헤리티지자이 분양가 평균</span><b>8.04억</b></div><div class="track"><div class="fill" data-w="78"></div></div></div>
+    <div class="bar"><div class="lab"><span>병점역 아이파크캐슬 (2021년 입주) 실거래</span><b>10.3억</b></div><div class="track"><div class="fill" data-w="100"></div></div></div>
+  </div>
+  <p class="src">오산헤리티지자이: 분양 홍보자료(발코니 확장 포함 평균) / 병점역 아이파크캐슬: 국토부 실거래가 2026.10.1 거래 1건. 개별 거래가는 층·향·동에 따라 차이가 있으며, 향후 가격을 보장하지 않음</p>
+  <p class="lead" style="font-size:15px;margin-top:20px"><b>참고</b> · 동탄역 역세권 단지 전용 84㎡는 최근 3개월 최고 12.8억(동탄역 푸르지오)~13.3억(동탄역 시범호반써밋)에 거래됐습니다. 입지·연식이 달라 직접 비교 대상은 아니며, 병점역 생활권의 시세 위치를 가늠하는 참고치입니다.</p>
+  <p class="src">출처: 국토부 실거래가(2026년 9월 기준 최근 3개월 최고가)</p>
+</section>
+
+<!-- 9. MERITS -->
+<section class="scene tall" id="s9">
+  <div class="eyebrow">그래서, 누구에게 가장 좋을까요?</div>
+  <h2>당신 세대의 답</h2>
+  <div class="merits" id="merits">
+    <div class="merit" data-age="30"><h3>30대 · 첫 집, 첫 자산</h3><p>청약통장도, 가점도 필요 없습니다. 누구나 바로 계약할 수 있고 실거주 의무도 없어 첫 집의 문턱이 가장 낮습니다.</p></div>
+    <div class="merit" data-age="40"><h3>40대 · 학군과 갈아타기</h3><p>초·중학교 도보 통학 단지. 청약 자격을 따질 필요가 없어, 지금 집을 가진 채로도 바로 계약할 수 있습니다.</p></div>
+    <div class="merit" data-age="50"><h3>50대 · 노후를 지킬 실물 자산</h3><p>전매제한 6개월, 대단지 신축. 은퇴 전 자산을 묶어 두기보다 일하게 만들 시점입니다.</p></div>
+    <div class="merit" data-age="60"><h3>60대 이상 · 자녀에게 물려줄 자산</h3><p>청약 절차 없이 원하는 평형을 바로 계약할 수 있고, 중소형 위주의 대단지 신축이라 실거주·임대·증여 등 활용 폭이 넓습니다. 자산 설계를 함께 상담해 드립니다.</p></div>
+  </div>
+</section>
+
+<!-- 10. FORM -->
+<section class="scene tall" id="apply" style="background:linear-gradient(180deg,var(--ink),var(--navy))">
+  <div class="eyebrow">마지막으로 한 가지만</div>
+  <h2>판단은 당신 몫입니다.<br><span class="gold">내 예산으로 몇 평까지 가능한지,<br>1분 상담으로 알려드립니다.</span></h2>
+  <p class="lead">관심 평형과 궁금한 점을 고르고 버튼만 누르세요. <b>문자 내용이 자동으로 채워집니다.</b></p>
+  <div class="card">
+    <div class="agent" id="agent">
+      <div class="av big" id="av2">상</div>
+      <div><b id="agName">담당자</b><span id="agSub">오산헤리티지자이 분양 상담</span><a id="agTel" class="num"></a></div>
+    </div>
+    <div id="pick">
+      <div class="q">관심 평형</div>
+      <div class="chips" id="cSize" data-one="1">
+        <button>75㎡ (30평형)</button><button class="on">84㎡ (34평형)</button><button>102㎡ (39평형)</button><button>124㎡ (47평형)</button><button>166㎡ 펜트하우스</button><button>아직 모르겠음</button>
+      </div>
+      <div class="q">궁금한 점 <small>(여러 개 선택 가능)</small></div>
+      <div class="chips" id="cAsk">
+        <button>내 예산으로 가능한 평형</button><button>분양가·남은 동호수</button><button>계약금·대출 조건</button><button>모델하우스 방문 예약</button><button>실거주·투자 비교</button>
+      </div>
+      <a class="btn call" id="btnCall">📞 전화로 바로 물어보기</a>
+      <a class="btn sms" id="btnSms">💬 문자로 문의하기</a>
+      <p class="hint">문자 버튼을 누르면 고른 내용이 담긴 문자 창이 열립니다. 확인 후 <b>보내기</b>만 누르세요.</p>
+    </div>
+    <p class="nophone" id="noPhone" hidden>이 페이지를 보내 드린 담당자에게 문의해 주세요.</p>
+  </div>
+  <p class="disclaim">※ 본 페이지는 오산헤리티지자이 분양 정보 안내용으로,  공개 통계와 분양 홍보자료를 바탕으로 한 시장 해설이며, 미래의 가격 상승이나 수익을 보장하지 않습니다. 개발 호재 중 '계획'으로 표시된 사항은 추진 과정에서 변경·지연될 수 있습니다. CG·수치는 소비자의 이해를 돕기 위한 것으로 실제와 차이가 있을 수 있으며, 분양 조건은 입주자모집공고를 기준으로 합니다.</p>
+</section>
+
+</main>
+
+<footer class="wrap">
+  오산헤리티지자이 분양 정보 안내 페이지<br>
+  <span id="ftAgent">상담: 이 페이지를 보내 드린 담당자</span>
+</footer>
+
+<div class="cta-bar" id="ctaBar"><a href="#apply" id="ctaA">담당자에게 바로 물어보기</a></div>
+
+<script>
+var SCRIPTS = {
+  '30': [
+    '정부가 규제 풀어줄 때까지 <b>기다리는 중</b>이에요?',
+    '그 사이에 당신 또래는 이미 <em>모델하우스를 돌고</em> 있어요.',
+    '정부는 당신 집을 <b>대신 사주지 않습니다.</b> 기다린 만큼 출발선만 뒤로 밀려요.',
+    '<span>30대인데요… 아직 모아둔 돈이 부족해서요.</span>',
+    '그래서 <em>지금</em>인 거예요. 집값보다 빨리 모을 자신이 있으면 기다리셔도 됩니다.'
+  ],
+  '40': [
+    '아이 교육비 때문에 <b>집은 나중에</b>로 미뤄두셨죠?',
+    '아이가 대학 갈 즈음엔 집값이 <em>이미 저만치</em> 가 있을 겁니다.',
+    '우리나라 주택시장은 결국 <b>세대 간 눈치싸움</b>이에요. 먼저 움직인 쪽이 이깁니다.',
+    '<span>교육비 많이 드는 세대라 어쩔 수 없잖아요.</span>',
+    '그 말로 <em>위로는 받을 수 있어도</em>, 자산은 지켜지지 않아요.'
+  ],
+  '50': [
+    '부모님 부양하느라 집 투자는 <b>엄두도 못 낸다</b>고요?',
+    '다들 같은 사정이에요. 그래도 <em>움직인 사람이</em> 노후를 지켰습니다.',
+    '"조금만 더 지켜보자" — 그렇게 기다려서 <b>나온 게 있었나요?</b>',
+    '<span>지금 들어가기엔 늦은 것 같아서요.</span>',
+    '늦었다고 느낄 때 멈추면 <em>정말 늦는 겁니다.</em> 은퇴 전이 마지막 기회예요.'
+  ],
+  '60': [
+    '어르신 세대가 우리나라 경제를 일으킨 <b>일등공신</b>이신 거, 압니다.',
+    '그런데 정부만 원망하고 계시면 <em>무엇이 달라질까요?</em>',
+    '가장 많은 자산을 가진 세대가 왜 <b>구경만</b> 하십니까. 시장은 참여하는 사람의 편입니다.',
+    '<span>이 나이에 무슨 집이에요.</span>',
+    '그래서 더 필요합니다. 끝까지 <em>시장의 주인공</em>으로 남으셔야, 자녀에게도 물려줄 게 생깁니다.'
+  ]
+};
+var LABEL = {'30':'30대','40':'40대','50':'50대','60':'60대 이상'};
+var chosen = '';
+
+function setAge(a, noScroll){
+  chosen = a;
+  document.querySelectorAll('#ages button').forEach(function(b){b.classList.toggle('on', b.dataset.age===a);});
+  var chat = document.getElementById('chat');
+  chat.innerHTML = SCRIPTS[a].map(function(t){
+    var me = t.indexOf('<span>')===0;
+    return '<div class="bubble'+(me?' me':'')+'">'+t.replace(/<\/?span>/g,'')+'</div>';
+  }).join('');
+  document.getElementById('s1').classList.remove('show');
+  var chip = document.getElementById('ageChip'); chip.hidden=false; chip.textContent=LABEL[a];
+  document.querySelectorAll('.merit').forEach(function(m){m.classList.toggle('on', m.dataset.age===a);});
+  try{localStorage.setItem('osanxi_share_age',a);}catch(e){}
+  if(!noScroll) document.getElementById('s1').scrollIntoView({behavior:'smooth'});
+}
+document.querySelectorAll('#ages button').forEach(function(b){b.addEventListener('click',function(){setAge(b.dataset.age);});});
+
+// URL 파라미터: ?age=30|40|50|60 → 해당 세대 답변 미리 선택 (광고세트별 랜딩용)
+//               ?v=b → 전환 장면 순한 문구 (A/B 테스트용)
+var QS = new URLSearchParams(location.search);
+var VARIANT = QS.get('v')==='b' ? 'b' : 'a';
+if(VARIANT==='b') document.getElementById('turnEyebrow').textContent='조금 직설적이었죠?';
+(function(){
+  var q = QS.get('age');
+  if(SCRIPTS[q]){ setAge(q, true); return; }
+  var a='30'; try{a=localStorage.getItem('osanxi_share_age')||'30';}catch(e){}
+  if(!SCRIPTS[a]) a='30';
+  chosen=''; var chat=document.getElementById('chat');
+  chat.innerHTML = SCRIPTS[a].map(function(t){var me=t.indexOf('<span>')===0;return '<div class="bubble'+(me?' me':'')+'">'+t.replace(/<\/?span>/g,'')+'</div>';}).join('');
+})();
+
+// reveal-on-view
+var io = new IntersectionObserver(function(es){
+  es.forEach(function(e){
+    if(!e.isIntersecting) return;
+    var el = e.target;
+    el.classList.add('show');
+    el.querySelectorAll('.fill').forEach(function(f){f.style.width=f.dataset.w+'%';});
+    if(el.id==='s6'){
+      var lis = el.querySelectorAll('.checks li');
+      lis.forEach(function(li,i){setTimeout(function(){li.classList.add('on');}, 350*(i+1));});
+      setTimeout(function(){document.getElementById('reveal').classList.add('on');}, 350*(lis.length+1)+200);
+    }
+  });
+},{threshold:.35});
+document.querySelectorAll('.scene').forEach(function(s){io.observe(s);});
+
+// progress + hide CTA on form
+var bar=document.getElementById('prog'), cta=document.getElementById('ctaBar'), apply=document.getElementById('apply');
+addEventListener('scroll',function(){
+  var h=document.documentElement; bar.style.width=(h.scrollTop/(h.scrollHeight-h.clientHeight)*100)+'%';
+  var r=apply.getBoundingClientRect(); cta.classList.toggle('hide', r.top<innerHeight*.6 && r.bottom>0);
+},{passive:true});
+
+// ===== 담당자 정보: 링크의 ?n=이름&c=소속&t=번호 로 표시 =====
+var NAME=(QS.get('n')||'').trim().slice(0,20), COMP=(QS.get('c')||'').trim().slice(0,30), TEL=(QS.get('t')||'').replace(/\D/g,'').slice(0,12);
+function fmtTel(d){
+  if(/^(15|16|18)\d{6}$/.test(d)) return d.slice(0,4)+'-'+d.slice(4);
+  if(/^02\d{7,8}$/.test(d)) return '02-'+d.slice(2,d.length-4)+'-'+d.slice(-4);
+  if(d.length>=10) return d.slice(0,3)+'-'+d.slice(3,d.length-4)+'-'+d.slice(-4);
+  return d;
+}
+function josa(w,a,b){var c=w.charCodeAt(w.length-1);if(c<0xAC00||c>0xD7A3)return b;return (c-0xAC00)%28?a:b;}
+function setTxt(id,t){var e=document.getElementById(id); if(e) e.textContent=t;}
+var initial = NAME ? NAME.charAt(0) : '상';
+setTxt('av',initial); setTxt('av2',initial);
+if(NAME){
+  setTxt('whoName',NAME); setTxt('agName',NAME);
+  setTxt('hookEye',NAME+josa(NAME,'이','가')+' 전하는 이야기'+(COMP?' · '+COMP:''));
+}
+if(COMP){ setTxt('whoSub',COMP+' · 오산헤리티지자이 분양 상담'); setTxt('agSub',COMP+' · 오산헤리티지자이 분양 상담'); }
+var IOS=/iPhone|iPad|iPod/.test(navigator.userAgent);
+if(TEL.length>=8){
+  var tl=document.getElementById('agTel'); tl.textContent=fmtTel(TEL); tl.href='tel:'+TEL;
+  document.getElementById('btnCall').href='tel:'+TEL;
+  document.getElementById('btnCall').textContent='📞 전화로 바로 물어보기 '+fmtTel(TEL);
+  setTxt('ftAgent','상담: '+(NAME||'담당자')+(COMP?' ('+COMP+')':'')+' · '+fmtTel(TEL));
+  if(/^01\d/.test(TEL)===false) document.getElementById('btnSms').style.display='none'; // 대표번호(1588 등)는 문자 수신 불가
+}else{
+  document.getElementById('pick').hidden=true; document.getElementById('noPhone').hidden=false;
+  document.getElementById('agTel').style.display='none';
+}
+if(NAME) setTxt('ctaA',NAME+'에게 바로 물어보기');
+// 선택 칩
+document.querySelectorAll('.chips').forEach(function(g){
+  g.addEventListener('click',function(ev){var b=ev.target.closest('button'); if(!b) return;
+    if(g.dataset.one){g.querySelectorAll('button').forEach(function(x){x.classList.toggle('on',x===b);});}
+    else b.classList.toggle('on');});
+});
+document.getElementById('btnSms').addEventListener('click',function(ev){
+  ev.preventDefault();
+  var size=(document.querySelector('#cSize .on')||{}).textContent||'';
+  var asks=[].map.call(document.querySelectorAll('#cAsk .on'),function(b){return b.textContent;});
+  var body='[오산헤리티지자이 문의]\n'+(chosen?'연령대: '+LABEL[chosen]+'\n':'')+(size?'관심 평형: '+size+'\n':'')+
+    (asks.length?'궁금한 점: '+asks.join(', ')+'\n':'')+'상담 부탁드립니다.';
+  location.href='sms:'+TEL+(IOS?'&':'?')+'body='+encodeURIComponent(body);
+});
+</script>
+</body>
+</html>
