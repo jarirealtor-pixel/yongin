@@ -1,0 +1,53 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>집값, 기다리면 내려갈까요? | 오산헤리티지자이 분양 상담</title>
+<meta name="description" content="공급 절벽, 규제의 역설, 오르는 분양가. 지금 집을 봐야 하는 이유와 오산헤리티지자이 분양 상담.">
+<meta property="og:title" content="집값, 기다리면 내려갈까요?">
+<meta property="og:description" content="청약통장 없이 계약하는 병점역 생활권 신축. 공급·규제·분양가를 숫자로 확인해 보세요.">
+<meta property="og:image" content="https://jarirealtor-pixel.github.io/yongin/osanxi/img/hero.jpg">
+<meta property="og:type" content="website">
+<meta name="robots" content="noindex">
+<style>body{margin:0;background:#0a1a2f;color:#9fb0c6;font-family:system-ui,sans-serif;display:grid;place-items:center;min-height:100vh;font-size:15px}a{color:#e3bf6a}</style>
+</head>
+<body>
+<p id="m">잠시만 기다려 주세요…</p>
+<script>
+// 짧은 링크 → 공유용 페이지로 이동
+//  ?a=코드  : staff.json에 등록된 직원 정보
+//  ?z=…     : 생성 페이지가 만든 압축 정보 [이름, 소속, 번호, 문자번호, 소개, 세대]
+(function(){
+  var SHARE = "../osanxi/share/";
+  var q = new URLSearchParams(location.search);
+  function go(d){
+    var p = new URLSearchParams();
+    if(d.n) p.set("n", d.n); if(d.c) p.set("c", d.c); if(d.t) p.set("t", d.t);
+    if(d.s) p.set("s", d.s); if(d.i) p.set("i", d.i);
+    var age = q.get("age") || d.age; if(age) p.set("age", age);
+    location.replace(SHARE + "?" + p.toString());
+  }
+  function fail(){ document.getElementById("m").innerHTML = '링크 정보를 찾을 수 없습니다. <a href="'+SHARE+'">페이지 보기</a>'; }
+  var z = q.get("z"), a = q.get("a");
+  if(z){
+    try{
+      var b64 = z.replace(/-/g,"+").replace(/_/g,"/"); while(b64.length % 4) b64 += "=";
+      var bin = atob(b64), bytes = new Uint8Array(bin.length);
+      for(var i=0;i<bin.length;i++) bytes[i] = bin.charCodeAt(i);
+      var arr = JSON.parse(new TextDecoder().decode(bytes));
+      return go({n:arr[0], c:arr[1], t:arr[2], s:arr[3], i:arr[4], age:arr[5]});
+    }catch(e){ return fail(); }
+  }
+  if(a){
+    fetch("staff.json", {cache:"no-cache"}).then(function(r){ return r.json(); }).then(function(list){
+      var d = list[a.toLowerCase()]; if(!d) return fail(); go(d);
+    }).catch(fail);
+    return;
+  }
+  location.replace(SHARE);
+})();
+</script>
+<noscript><a href="../osanxi/share/">페이지 보기</a></noscript>
+</body>
+</html>

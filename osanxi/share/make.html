@@ -108,6 +108,7 @@ ul.tips li:last-child{border:0}
 
 <script>
 var BASE='https://jarirealtor-pixel.github.io/yongin/osanxi/share/';
+var SHORT='https://jarirealtor-pixel.github.io/yongin/s/?z=';
 var $=function(id){return document.getElementById(id);};
 var IOS=/iPhone|iPad|iPod/.test(navigator.userAgent);
 var msgEdited=false;
@@ -128,12 +129,15 @@ function build(){
   ['copyUrl','preview','copyMsg','sendSms'].forEach(function(id){$(id).setAttribute('aria-disabled', ok?'false':'true');});
   if(!ok){ $('url').textContent='이름과 번호를 입력하면 여기에 링크가 생깁니다.'; return ''; }
   var q=new URLSearchParams(); q.set('n',n); if(c) q.set('c',c); if(intro) q.set('i',intro); q.set('t',t); if(!mob && /^01\d{8,9}$/.test(sm)) q.set('s',sm); if(age) q.set('age',age);
-  var url=BASE+'?'+q.toString();
+  var full=BASE+'?'+q.toString();
+  var arr=[n,c,t,(!mob && /^01\d{8,9}$/.test(sm))?sm:'',intro,age]; while(arr.length&&!arr[arr.length-1]) arr.pop();
+  var bytes=new TextEncoder().encode(JSON.stringify(arr)), bin=''; for(var k=0;k<bytes.length;k++) bin+=String.fromCharCode(bytes[k]);
+  var url=SHORT+btoa(bin).replace(/\+/g,'-').replace(/\//g,'_').replace(/=+$/,'');
   $('url').textContent=url; $('preview').href=url;
   if(!msgEdited){
     $('msg').value='안녕하세요, '+n+(c?'('+c+')':'')+'입니다.\n\n"집값, 기다리면 내려갈까요?"\n지금 집을 고민 중이시라면 1분만 넘겨보세요. 세대별로 숫자로 정리해 봤습니다.\n\n'+url+'\n\n궁금한 점은 '+fmtTel(t)+'로 편하게 연락 주세요.';
   }else{
-    $('msg').value=$('msg').value.replace(/https:\/\/jarirealtor-pixel\.github\.io\/yongin\/osanxi\/share\/\S*/,url);
+    $('msg').value=$('msg').value.replace(/https:\/\/jarirealtor-pixel\.github\.io\/yongin\/(osanxi\/share|s)\/\S*/,url);
   }
   $('sendSms').href='sms:'+(IOS?'&':'?')+'body='+encodeURIComponent($('msg').value);
   try{localStorage.setItem('osanxi_maker',JSON.stringify({n:n,c:c,i:intro,t:t,s:sm}));}catch(e){}
