@@ -1,0 +1,53 @@
+:root{--navy:#14233c;--navy2:#1f3557;--ink0:#0e1829;--gold:#b8935a;--gold2:#e9c77c;--soft:#f4ece0;--ink:#1b1f27;--muted:#5d6574;--line:#e4e6ea;--bg2:#f6f7f9;--red:#d64535;--ok:#1f7a4d}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:Pretendard,-apple-system,"Apple SD Gothic Neo","Malgun Gothic",sans-serif;color:var(--ink);background:#fff;line-height:1.6;-webkit-font-smoothing:antialiased;word-break:keep-all;padding-bottom:84px}
+.wrap{max-width:520px;margin:0 auto;padding:0 18px}
+a{color:inherit}
+.top{background:var(--ink0) center/cover no-repeat;color:#fff;padding:30px 0 26px;background-image:linear-gradient(180deg,rgba(14,24,41,.55),rgba(14,24,41,.96)),url('https://jarirealtor-pixel.github.io/yongin/osanxi/img/hero.jpg')}
+.top .from{display:inline-flex;align-items:center;gap:8px;font-size:13px;color:#d6dce6}
+.top .av{width:30px;height:30px;border-radius:50%;background:var(--gold);color:#fff;font-weight:800;display:grid;place-items:center;font-size:14px}
+.top .no{display:block;margin-top:14px;font-size:12px;font-weight:800;letter-spacing:.1em;color:var(--gold2)}
+.top h1{font-size:27px;font-weight:900;letter-spacing:-.03em;line-height:1.3;margin-top:4px}
+.top h1 em{font-style:normal;color:var(--gold2)}
+.top p{font-size:15px;color:#c9d1dd;margin-top:8px}
+main{padding:22px 0 8px}
+h2{font-size:20px;font-weight:800;color:var(--navy);letter-spacing:-.02em;line-height:1.35;margin:26px 0 8px}
+p.t{font-size:15.5px;color:#333}
+.note{font-size:12px;color:var(--muted);margin-top:10px;line-height:1.55}
+.cards{display:flex;flex-direction:column;gap:10px;margin-top:6px}
+.cd{border:1px solid var(--line);border-radius:14px;padding:16px;display:flex;gap:14px;align-items:flex-start}
+.cd .big{flex:none;min-width:84px;text-align:center;font-size:22px;font-weight:900;color:var(--gold);line-height:1.15}
+.cd .big small{display:block;font-size:11px;color:var(--muted);font-weight:700}
+.cd h3{font-size:16px;font-weight:800;color:var(--navy)}
+.cd p{font-size:14px;color:#444;margin-top:2px}
+.bars{display:flex;flex-direction:column;gap:12px;margin-top:10px}
+.bar .lab{display:flex;justify-content:space-between;align-items:flex-end;font-size:14px;color:#333;margin-bottom:5px;gap:8px}
+.bar .lab b{font-size:19px;font-weight:800;color:var(--navy);white-space:nowrap}
+.bar .lab small{display:block;font-size:12px;color:var(--muted)}
+.track{height:22px;border-radius:7px;background:var(--bg2);overflow:hidden}
+.fill{height:100%;border-radius:7px;background:#c3cad6}
+.bar.us .fill{background:var(--gold)}.bar.us .lab b{color:var(--gold)}
+.qa{border-bottom:1px solid var(--line);padding:4px 0}
+.qa summary{list-style:none;cursor:pointer;padding:14px 0;font-size:16px;font-weight:800;color:var(--navy);display:flex;gap:10px}
+.qa summary::-webkit-details-marker{display:none}
+.qa summary:before{content:"Q";color:var(--gold);font-weight:900}
+.qa[open] summary{color:var(--gold)}
+.qa div{font-size:15px;color:#333;padding:0 0 16px 22px}
+.qa div b{color:var(--navy)}
+.reply{background:var(--soft);border-radius:16px;padding:20px 16px;margin-top:28px;text-align:center}
+.reply b{display:block;font-size:17px;color:var(--navy)}
+.reply p{font-size:14px;color:var(--muted);margin-top:4px}
+.qbtns{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:14px}
+.qbtns a{display:block;background:#fff;border:1px solid #d9cdb8;border-radius:12px;padding:12px 6px;font-size:14px;font-weight:700;text-decoration:none;color:var(--navy)}
+.next{display:block;margin-top:18px;border:1px solid var(--line);border-radius:14px;padding:14px 16px;text-decoration:none}
+.next small{display:block;font-size:12px;color:var(--muted);font-weight:700}
+.next b{font-size:15.5px;color:var(--navy)}
+.next b:after{content:" →"}
+footer{color:#7b8494;font-size:11.5px;line-height:1.7;padding:26px 0 30px;text-align:center}
+.fix{position:fixed;left:0;right:0;bottom:0;z-index:40;padding:8px 12px calc(8px + env(safe-area-inset-bottom));background:rgba(255,255,255,.97);border-top:1px solid var(--line);box-shadow:0 -4px 16px rgba(0,0,0,.06)}
+.fix .in{max-width:520px;margin:0 auto;display:grid;grid-template-columns:1fr 1.5fr;gap:8px}
+.fix a{display:flex;align-items:center;justify-content:center;height:52px;border-radius:12px;font-weight:800;font-size:16px;text-decoration:none}
+.fix .call{border:1.5px solid var(--navy);color:var(--navy)}
+.fix .sms{background:var(--gold);color:#fff}
+.fix .sms.only{grid-column:1/-1}
+input,select{font:inherit}

@@ -79,6 +79,7 @@ footer a{color:#7b8494}
       </div>
       <input type="text" id="website" class="hp" tabindex="-1" autocomplete="off" aria-hidden="true">
       <label class="agree"><input type="checkbox" id="ok"><span>개인정보 수집·이용에 동의합니다 <span class="req">*</span><br>(이름·연락처·관심 평형 / 분양 상담 목적 / 상담 종료 후 6개월 보관 / 보호책임자 고영화) <a href="https://jarirealtor-pixel.github.io/yongin/privacy-coreagency.html" target="_blank" rel="noopener">개인정보처리방침</a></span></label>
+      <label class="agree" style="margin-top:8px"><input type="checkbox" id="mkt"><span>(선택) 분양가 변동·잔여 세대·견본주택 행사 소식을 문자로 받겠습니다. 언제든 수신 거부할 수 있습니다.</span></label>
       <button class="btn gold" id="send" type="submit">무료 상담 신청하기</button>
       <p class="msg" id="msg"></p>
       <a class="btn line js-tel" href="tel:16887038">📞 바로 전화하기 1688-7038</a>
@@ -152,7 +153,7 @@ $("lead").addEventListener("submit", function(e){
   msg.style.display = "none";
   var body = new URLSearchParams({
     site: CONFIG.SITE, name: name, phone: phone,
-    types: sel("type"), topic: "상담 신청", memo: "연락 방법: " + sel("method"), agree: "동의",
+    types: sel("type"), topic: "상담 신청", memo: "연락 방법: " + sel("method") + " / 광고문자 수신동의: " + ($("mkt").checked ? "Y" : "N"), agree: "동의",
     n_keyword: P.get("n_keyword") || P.get("n_query") || P.get("utm_term") || "",
     n_media: P.get("utm_source") || P.get("n_media") || "",
     n_ad_group: P.get("utm_campaign") || P.get("n_ad_group") || "",
