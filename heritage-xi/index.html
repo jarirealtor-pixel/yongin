@@ -246,7 +246,7 @@ footer b{color:#d6dce6}footer a{color:#9aa5b6}
 <script>
 var PHONE = "1688-7038";
 var LANDING = "https://jarirealtor-pixel.github.io/yongin/heritage/";
-var DEFAULT_QS = "utm_source=google&utm_medium=shorts"; // 주소에 utm이 없을 때(구글애즈 유입 기본값)
+var DEFAULT_QS = ""; // 주소에 꼬리(utm)가 없으면 직접/기타 유입으로 기록
 var TEL = PHONE.replace(/\D/g,"");
 document.querySelectorAll(".js-tel").forEach(function(a){ a.href = "tel:" + TEL; });
 // 구글애즈 전환: 전화 버튼 클릭 (전환 액션 '전화클릭' 라벨을 넣으면 작동)
