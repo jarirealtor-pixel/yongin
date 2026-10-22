@@ -250,7 +250,7 @@ var DEFAULT_QS = "utm_source=google&utm_medium=shorts"; // 주소에 utm이 없�
 var TEL = PHONE.replace(/\D/g,"");
 document.querySelectorAll(".js-tel").forEach(function(a){ a.href = "tel:" + TEL; });
 // 구글애즈 전환: 전화 버튼 클릭 (전환 액션 '전화클릭' 라벨을 넣으면 작동)
-var GADS_TEL_SEND_TO = "";
+var GADS_TEL_SEND_TO = "AW-18521422229/dx6FCOfbsKUdEJXz2f9E";
 document.querySelectorAll(".js-tel").forEach(function(a){
   a.addEventListener("click", function(){
     if(GADS_TEL_SEND_TO && window.gtag){ try{ gtag("event","conversion",{send_to: GADS_TEL_SEND_TO}); }catch(e){} }
