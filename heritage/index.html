@@ -1,6 +1,14 @@
 <!doctype html>
 <html lang="ko">
 <head>
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=AW-18521422229"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'AW-18521422229', {allow_enhanced_conversions: true});
+</script>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>오산헤리티지자이 분양 상담 신청 | 코어에이전시</title>
@@ -112,11 +120,18 @@ var CONFIG = {
   PHONE: "1688-7038",
   SITE: "[코어에이전시] 오산헤리티지자이",
   INFO_URL: "https://jarirealtor-pixel.github.io/yongin/heritage-xi/", // 단지 정보 페이지 (Vercel 교체 후 그 주소로 바꿔도 됨)
-  GADS_SEND_TO: "" // 구글애즈 전환: 'AW-XXXXXXXXX/YYYYYYY'
+  GADS_SEND_TO: "AW-18521422229/8N7JCIrPsKUdEJXz2f9E" // 구글애즈 전환: 상담신청
 };
 var $ = function(id){ return document.getElementById(id); };
 var TEL = CONFIG.PHONE.replace(/\D/g,"");
 document.querySelectorAll(".js-tel").forEach(function(a){ a.href = "tel:" + TEL; });
+// 구글애즈 전환: 전화 버튼 클릭 (전환 액션 '전화클릭' 라벨을 넣으면 작동)
+var GADS_TEL_SEND_TO = "";
+document.querySelectorAll(".js-tel").forEach(function(a){
+  a.addEventListener("click", function(){
+    if(GADS_TEL_SEND_TO && window.gtag){ try{ gtag("event","conversion",{send_to: GADS_TEL_SEND_TO}); }catch(e){} }
+  });
+});
 $("more").href = CONFIG.INFO_URL;
 
 // 유입 파라미터 보관
@@ -162,7 +177,7 @@ $("lead").addEventListener("submit", function(e){
   var btn = $("send"); btn.disabled = true; btn.textContent = "접수 중…";
   fetch(CONFIG.ENDPOINT, {method:"POST", mode:"no-cors", body: body}).then(function(){
     $("body").style.display = "none"; $("done").style.display = "block";
-    if(CONFIG.GADS_SEND_TO && window.gtag){ try{ gtag("event","conversion",{send_to: CONFIG.GADS_SEND_TO}); }catch(e){} }
+    if(CONFIG.GADS_SEND_TO && window.gtag){ try{ gtag("set","user_data",{phone_number: "+82" + phone.slice(1)}); gtag("event","conversion",{send_to: CONFIG.GADS_SEND_TO}); }catch(e){} }
     if(window.fbq){ try{ fbq("track","Lead"); }catch(e){} }
     if(window.wcs){ try{ wcs.trans({type:"lead"}); }catch(e){} }
   }).catch(function(){
@@ -170,6 +185,5 @@ $("lead").addEventListener("submit", function(e){
   });
 });
 </script>
-<!-- 구글애즈 전환 추적 태그(gtag.js)는 계정 발급 후 이 위치에 추가 -->
 </body>
 </html>
